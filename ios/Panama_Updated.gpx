@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.topografix.com/GPX/1/1" xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="Open GPX Tracker for iOS">
+	<wpt lat="39.96104510" lon="116.4450860">
+    <time>2010-01-01T00:00:00Z</time>
+</wpt>
+<wpt lat="39.96090940" lon="116.4451400">
+    <time>2010-01-01T00:00:05Z</time>
+</wpt>
+...
+<wpt lat="39.96087240" lon="116.4450430">
+    <time>2010-01-01T00:00:09Z</time>
+</wpt>
+</gpx>
