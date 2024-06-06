@@ -30,7 +30,7 @@ class _MapPageState extends State<MapPage> {
   },
   ),
   )
-  ..loadRequest(Uri.parse('https://egp.websitecraver.com/mapmobile'));
+  ..loadRequest(Uri.parse('http://egp.jcoders.online/mapmobile'));
 
   @override
   Widget build(BuildContext context) {

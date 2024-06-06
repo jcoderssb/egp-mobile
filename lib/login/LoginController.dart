@@ -18,7 +18,7 @@ class LoginController extends GetxController {
 
 
   //admin@egp.com.my
-  var loginUrl = "https://egp.websitecraver.com/api/create-token";
+  var loginUrl = "http://egp.jcoders.online/api/create-token";
 
 
   _initialScreen(isLoggedIn){
