@@ -11,14 +11,14 @@ import 'LoginPage.dart';
 class LoginController extends GetxController {
 
   var progressVisible = false.obs;
-  var icController = TextEditingController();
+  var emailController = TextEditingController();
   var passwordController = TextEditingController();
 
   var authBox;
 
 
   //admin@egp.com.my
-  var loginUrl = "https://egp.jcoders.online/api/create-token";
+  var loginUrl = "http://egp.jcoders.online/api/create-token";
 
 
   _initialScreen(isLoggedIn){
@@ -27,7 +27,7 @@ class LoginController extends GetxController {
     }else{
       LoginController controller = Get.find();
       controller.passwordController.clear();
-      Get.offAll(()=> ChoicePage(accessToken: ''));
+      Get.offAll(()=> const ChoicePage());
     }
   }
 
@@ -51,18 +51,18 @@ class LoginController extends GetxController {
 
   void checkLogin(){
     // do the login here
-    // icController.text = "mhasan341@gmail.com";
+    // emailController.text = "mhasan341@gmail.com";
     // passwordController.text = "jJsB5WwGxTvXi7C!";
 
-    // var validEmail = icController.text.isNotEmpty && RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-    //     .hasMatch(icController.text);
+    // var validEmail = emailController.text.isNotEmpty && RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    //     .hasMatch(emailController.text);
     String passwordText = passwordController.text;
     //AuthController authController = Get.find();
 
     // if (validEmail && passwordText.isNotEmpty && passwordText.length >= 6){
       // do login
       showProgress();
-      login(icController.text, passwordText);
+      login(emailController.text, passwordText);
     // } else{
     //   // if check
     //   Get.defaultDialog(
@@ -81,36 +81,20 @@ class LoginController extends GetxController {
       var url = Uri.parse(loginUrl);
 
       var response = await http.post(url, body: {'ic': ic, 'password': password});
-      print(response.statusCode);
-      print(response.reasonPhrase);
 
       if (response.statusCode == 200){
-
         Map jsonObject = json.decode(response.body);
+        if(jsonObject["status"]=="success") {
+          String token = jsonObject["access_token"];
+          String expiry = jsonObject["expires_at"];
+          await openHive();
+          authBox.put(TOKEN_KEY, token);
+          authBox.put(TOKEY_EXPIRE_KEY, expiry);
 
-        // if(jsonObject["status"]=="success") {
-          // String token = jsonObject["access_token"];
-          // String expiry = jsonObject["expires_at"];
-          // await openHive();
-          // authBox.put(TOKEN_KEY, token);
-          // authBox.put(TOKEY_EXPIRE_KEY, expiry);
-
-        var accessToken = jsonObject['access_token'];
-        print(accessToken);
-
-          moveToChoice(accessToken);
-        // }
+          moveToChoice();
+        }
 
       } else {
-          if (response.statusCode == 422) {
-            Map jsonObject = json.decode(response.body);
-            print(jsonObject["credentials"]);
-
-          } else {
-            Map jsonObject = json.decode(response.body);
-            print(jsonObject["error"]);
-          }
-
           Get.defaultDialog(
               title: "Error",
               middleText: "Enter email and password correctly",
@@ -144,9 +128,8 @@ class LoginController extends GetxController {
     }
   }
 
-  void moveToChoice(accessToken){
-
-    Get.offAll(()=> ChoicePage(accessToken: accessToken));
+  void moveToChoice(){
+    Get.offAll(()=> const ChoicePage());
   }
 
   void logOut() async {

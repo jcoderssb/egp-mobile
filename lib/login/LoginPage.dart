@@ -10,13 +10,13 @@ class LoginPage extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    final ic = TextFormField(
-      controller: controller.icController,
-      keyboardType: TextInputType.text,
+    final email = TextFormField(
+      controller: controller.emailController,
+      keyboardType: TextInputType.emailAddress,
       autofocus: false,
       decoration: const InputDecoration(
         hintStyle: TextStyle(color: Colors.white54),
-        hintText: 'IC',
+        hintText: 'Email',
         contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
       ),
       style: const TextStyle(color: Colors.white70),
@@ -92,7 +92,7 @@ class LoginPage extends GetView<LoginController> {
                         ),
 
                         const SizedBox(height: 30.0),
-                        ic,
+                        email,
                         const SizedBox(height: 8.0),
                         password,
                         Spacer(),

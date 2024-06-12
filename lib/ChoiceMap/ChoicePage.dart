@@ -7,30 +7,19 @@ import '../Constants.dart';
 import 'MapPage.dart';
 
 class ChoicePage extends StatefulWidget {
-  final String accessToken;
-
-  ChoicePage({Key? key, required this.accessToken});
+  const ChoicePage({super.key});
 
   @override
   State<ChoicePage> createState() => _ChoicePageState();
 }
 
 class _ChoicePageState extends State<ChoicePage> {
-  late String accessToken;
 
-  @override
-  void initState() {
-    super.initState();
-    accessToken = widget.accessToken;
-  }
-
-  // i want to use access token in here!
-
-  late final mapButton = SizedBox(
+  final mapButton = SizedBox(
     width: Get.width * 0.8,
     child: ElevatedButton(
         onPressed: (){
-          Get.to(()=> MapPage(accessToken: accessToken));
+          Get.to(()=> const MapPage());
         },
         style: TextButton.styleFrom(
           padding: const EdgeInsets.all(15),
