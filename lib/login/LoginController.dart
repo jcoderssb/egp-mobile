@@ -11,7 +11,7 @@ import 'LoginPage.dart';
 class LoginController extends GetxController {
 
   var progressVisible = false.obs;
-  var emailController = TextEditingController();
+  var icController = TextEditingController();
   var passwordController = TextEditingController();
 
   var authBox;
@@ -51,23 +51,23 @@ class LoginController extends GetxController {
 
   void checkLogin(){
     // do the login here
-    // emailController.text = "mhasan341@gmail.com";
+    // icController.text = "mhasan341@gmail.com";
     // passwordController.text = "jJsB5WwGxTvXi7C!";
 
-    // var validEmail = emailController.text.isNotEmpty && RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-    //     .hasMatch(emailController.text);
+    // var validEmail = icController.text.isNotEmpty && RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+    //     .hasMatch(icController.text);
     String passwordText = passwordController.text;
     //AuthController authController = Get.find();
 
     // if (validEmail && passwordText.isNotEmpty && passwordText.length >= 6){
       // do login
       showProgress();
-      login(emailController.text, passwordText);
+      login(icController.text, passwordText);
     // } else{
     //   // if check
     //   Get.defaultDialog(
     //       title: "Error",
-    //       middleText: "Enter email and password correctly",
+    //       middleText: "Enter ic and password correctly",
     //       backgroundColor: Colors.white,
     //       titleStyle: const TextStyle(color: Colors.red),
     //       middleTextStyle: const TextStyle(color: Colors.black)
@@ -97,7 +97,7 @@ class LoginController extends GetxController {
       } else {
           Get.defaultDialog(
               title: "Error",
-              middleText: "Enter email and password correctly",
+              middleText: "Enter ic and password correctly",
               backgroundColor: Colors.white,
               titleStyle: const TextStyle(color: Colors.red),
               middleTextStyle: const TextStyle(color: Colors.black)
