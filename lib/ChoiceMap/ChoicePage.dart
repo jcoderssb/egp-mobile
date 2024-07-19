@@ -27,7 +27,7 @@ class _ChoicePageState extends State<ChoicePage> {
           backgroundColor: themeColor,
         ),
 
-        child:  const Text('Aplikasi peta',
+        child:  const Text('Peta',
             style: TextStyle(
             fontSize: 20,
             color: Colors.white,
@@ -46,7 +46,7 @@ class _ChoicePageState extends State<ChoicePage> {
         backgroundColor: themeColor,
       ),
 
-      child:  const Text('Dashboard',
+      child:  const Text('Dashboard PSOH',
           style: TextStyle(
               fontSize: 20,
               color: Colors.white,
@@ -65,7 +65,7 @@ class _ChoicePageState extends State<ChoicePage> {
         backgroundColor: themeColor,
       ),
 
-      child:  const Text('Mulai Mode Jejak',
+      child:  const Text('Trail Mode',
           style: TextStyle(
               fontSize: 20,
               color: Colors.white,
