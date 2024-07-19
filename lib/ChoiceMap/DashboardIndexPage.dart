@@ -6,14 +6,14 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Constants.dart';
 
-class MapPage extends StatefulWidget {
-  const MapPage({super.key});
+class DashboardIndexPage extends StatefulWidget {
+  const DashboardIndexPage({super.key});
 
   @override
-  State<MapPage> createState() => _MapPageState();
+  State<DashboardIndexPage> createState() => _DashboardIndexPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _DashboardIndexPageState extends State<DashboardIndexPage> {
 
   late WebViewController controller;
 
@@ -44,7 +44,7 @@ class _MapPageState extends State<MapPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mapmobile'), headers: {"Authorization": "Bearer $token"});
+      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mobile/dashboards'), headers: {"Authorization": "Bearer $token"});
   }
 
 

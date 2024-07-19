@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import '../Constants.dart';
 import 'MapPage.dart';
+import 'DashboardIndexPage.dart';
 
 class ChoicePage extends StatefulWidget {
   const ChoicePage({super.key});
@@ -31,7 +32,26 @@ class _ChoicePageState extends State<ChoicePage> {
             fontSize: 20,
             color: Colors.white,
             fontWeight: FontWeight.bold)),
-  ),
+    ),
+  );
+
+  final dashboardButton = SizedBox(
+    width: Get.width * 0.8,
+    child: ElevatedButton(
+      onPressed: (){
+        Get.to(()=> const DashboardIndexPage());
+      },
+      style: TextButton.styleFrom(
+        padding: const EdgeInsets.all(15),
+        backgroundColor: themeColor,
+      ),
+
+      child:  const Text('Dashboard',
+          style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+              fontWeight: FontWeight.bold)),
+    ),
   );
 
   final trackerButton = SizedBox(
@@ -82,6 +102,8 @@ class _ChoicePageState extends State<ChoicePage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             mapButton,
+            SizedBox(height: 50,),
+            dashboardButton,
             SizedBox(height: 50,),
             trackerButton,
             SizedBox(height: 50,),
