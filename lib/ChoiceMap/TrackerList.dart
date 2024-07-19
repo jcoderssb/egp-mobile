@@ -88,7 +88,7 @@ class _TrackerListState extends State<TrackerList> {
       "negeri_id":data.negeriId.toString()
     };
 
-    var url = Uri.parse("https://www.egp.websitecraver.com/api/rekod-trail");
+    var url = Uri.parse("https://egp.jcoders.online/api/rekod-trail");
 
     await http.post(url,
         headers: header,

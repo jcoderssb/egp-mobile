@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:egp/Constants.dart';
+import 'package:egp/global.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:egp/tracker/TrackerPage.dart';
@@ -18,7 +19,7 @@ class LoginController extends GetxController {
 
 
   //admin@egp.com.my
-  var loginUrl = "http://egp.jcoders.online/api/create-token";
+  var loginUrl = "https://egp.jcoders.online/api/create-token";
 
 
   _initialScreen(isLoggedIn){
@@ -87,10 +88,14 @@ class LoginController extends GetxController {
         if(jsonObject["status"]=="success") {
           String token = jsonObject["access_token"];
           String expiry = jsonObject["expires_at"];
+          String u = jsonObject["u"];
+          String nid = jsonObject["negeri_id"];
           await openHive();
           authBox.put(TOKEN_KEY, token);
           authBox.put(TOKEY_EXPIRE_KEY, expiry);
 
+          UID = u;
+          nID = nid;
           moveToChoice();
         }
 
