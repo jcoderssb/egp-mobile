@@ -33,25 +33,22 @@ class TrackerData {
     if (json['location_points'] != null) {
       locationPoints = <LocationPoints>[];
       json['location_points'].forEach((v) {
-        locationPoints!.add(new LocationPoints.fromJson(v));
+        locationPoints.add(LocationPoints.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['name'] = this.name;
-    data['start_point'] = this.startPoint;
-    data['end_point'] = this.endPoint;
-    data['mod_trail_id'] = this.modTrailId;
-    data['kaedah_trail_id'] = this.kaedahTrailId;
-    data['negeri_id'] = this.negeriId;
-    data['interval'] = this.interval;
-    data['interval_type_id'] = this.intervalTypeId;
-    if (this.locationPoints != null) {
-      data['location_points'] =
-          this.locationPoints!.map((v) => v.toJson()).toList();
-    }
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['name'] = name;
+    data['start_point'] = startPoint;
+    data['end_point'] = endPoint;
+    data['mod_trail_id'] = modTrailId;
+    data['kaedah_trail_id'] = kaedahTrailId;
+    data['negeri_id'] = negeriId;
+    data['interval'] = interval;
+    data['interval_type_id'] = intervalTypeId;
+    data['location_points'] = locationPoints.map((v) => v.toJson()).toList();
     return data;
   }
 }
@@ -68,9 +65,9 @@ class LocationPoints {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['lat'] = this.lat;
-    data['lon'] = this.lon;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['lat'] = lat;
+    data['lon'] = lon;
     return data;
   }
 }

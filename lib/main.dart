@@ -1,10 +1,10 @@
 import 'package:egp/Constants.dart';
-import 'package:egp/login/LoginPage.dart';
-import 'package:egp/tracker/TrackerController.dart';
+import 'package:egp/login/login_page.dart';
+import 'package:egp/tracker/tracker_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'login/LoginController.dart';
+import 'login/login_controller.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

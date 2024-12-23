@@ -1,22 +1,21 @@
 import 'package:egp/global.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:hive/hive.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 import '../Constants.dart';
 
-class DashboardIndexPage extends StatefulWidget {
-  const DashboardIndexPage({super.key});
+class MapPage extends StatefulWidget {
+  const MapPage({super.key});
 
   @override
-  State<DashboardIndexPage> createState() => _DashboardIndexPageState();
+  State<MapPage> createState() => _MapPageState();
 }
 
-class _DashboardIndexPageState extends State<DashboardIndexPage> {
-
+class _MapPageState extends State<MapPage> {
   late WebViewController controller;
 
+  @override
   void initState() {
     super.initState();
 
@@ -32,11 +31,9 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
           onProgress: (int progress) {
             // Update loading bar.
           },
-          onPageStarted: (String url) {
-
-          },
+          onPageStarted: (String url) {},
           onPageFinished: (String url) {
-            controller.runJavaScript('myU="' + UID + '"; myC="' + nID + '"');
+            controller.runJavaScript("myU='$UID'; myC='$nID'");
           },
           onWebResourceError: (WebResourceError error) {},
           onNavigationRequest: (NavigationRequest request) {
@@ -44,10 +41,8 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mobile/dashboards'), headers: {"Authorization": "Bearer $token"});
+      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mapmobile'), headers: {"Authorization": "Bearer $token"});
   }
-
-
 
   @override
   Widget build(BuildContext context) {

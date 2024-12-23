@@ -3,18 +3,18 @@ import 'package:egp/Constants.dart';
 import 'package:egp/global.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
-import 'package:egp/tracker/TrackerPage.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 
-import '../ChoiceMap/ChoicePage.dart';
-import 'LoginPage.dart';
+import '../ChoiceMap/choice_page.dart';
+import 'login_page.dart';
 class LoginController extends GetxController {
 
   var progressVisible = false.obs;
   var icController = TextEditingController();
   var passwordController = TextEditingController();
 
+  // ignore: prefer_typing_uninitialized_variables
   var authBox;
 
 
@@ -41,7 +41,6 @@ class LoginController extends GetxController {
   }
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     _initialScreen(false);
   }
@@ -51,32 +50,14 @@ class LoginController extends GetxController {
   }
 
   void checkLogin(){
-    // do the login here
-    // icController.text = "mhasan341@gmail.com";
-    // passwordController.text = "jJsB5WwGxTvXi7C!";
-
-    // var validEmail = icController.text.isNotEmpty && RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-    //     .hasMatch(icController.text);
     String passwordText = passwordController.text;
-    //AuthController authController = Get.find();
-
-    // if (validEmail && passwordText.isNotEmpty && passwordText.length >= 6){
-      // do login
-      showProgress();
-      login(icController.text, passwordText);
-    // } else{
-    //   // if check
-    //   Get.defaultDialog(
-    //       title: "Error",
-    //       middleText: "Enter ic and password correctly",
-    //       backgroundColor: Colors.white,
-    //       titleStyle: const TextStyle(color: Colors.red),
-    //       middleTextStyle: const TextStyle(color: Colors.black)
-    //   );
-    // }
+    showProgress();
+    login(icController.text, passwordText);
   }
 
   void login(String ic, password) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    
     LoginController controller = Get.find();
     try{
       var url = Uri.parse(loginUrl);
@@ -110,7 +91,6 @@ class LoginController extends GetxController {
       }
 
       controller.hideProgress();
-      // moveToChoice();
 
     }catch(e){
       controller.hideProgress();
@@ -139,6 +119,5 @@ class LoginController extends GetxController {
 
   void logOut() async {
     progressVisible.value = true;
-    //await auth.signOut().then((value) => progressVisible.value = false);
   }
 }

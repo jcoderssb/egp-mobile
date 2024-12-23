@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:egp/Constants.dart';
-import 'package:egp/tracker/TrackerData.dart';
+import 'package:egp/tracker/tracker_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
@@ -27,7 +27,7 @@ class _TrackerListState extends State<TrackerList> {
         children: [
           Container(
             height: Get.height * 0.8,
-            padding: EdgeInsets.all(20),
+            padding: const EdgeInsets.all(20),
             child: ListView.separated(
               itemCount: dataBox.length,
               itemBuilder: (context, position){
@@ -40,16 +40,16 @@ class _TrackerListState extends State<TrackerList> {
                   trailing: ElevatedButton.icon(onPressed: (){
                     uploadTrackerData(trackerObj);
 
-                  }, icon: Icon(Icons.upload), label: Text("Upload")),
+                  }, icon: const Icon(Icons.upload), label: const Text("Upload")),
                 );
-              }, separatorBuilder: (BuildContext context, int index) { return Divider(); },
+              }, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
             ),
           ),
           ElevatedButton(onPressed: (){
             dataBox.clear();
             setState(() {
             });
-          }, child: Text("Clear Database")),
+          }, child: const Text("Clear Database")),
         ],
       )
     );
@@ -73,8 +73,6 @@ class _TrackerListState extends State<TrackerList> {
       "Accept": "application/json",
       "Authorization": "Bearer $token"
     };
-
-    print("Data: ${data.toJson()}");
 
     Map<String, dynamic> body = {
       "name":data.name,

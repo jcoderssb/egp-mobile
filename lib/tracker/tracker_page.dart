@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:egp/Constants.dart';
 import 'package:egp/helper/HWMInputBox.dart';
-import 'package:egp/tracker/TrackerController.dart';
-import 'package:egp/tracker/TrackerData.dart';
+import 'package:egp/tracker/tracker_controller.dart';
+import 'package:egp/tracker/tracker_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
@@ -112,10 +112,7 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
     var userLocation = LocationPoints(lat: lat, lon: lon);
     controller.userLocations.add(userLocation);
 
-    print("About to Tick timer for ${controller.getIntervalAmount()} seconds");
-
     mytimer = Timer.periodic(Duration(seconds: controller.getIntervalAmount()), (timer) async {
-      print("Timer ticking at ${controller.getIntervalAmount()} seconds");
       _locationData = await location.getLocation();
 
       lat = _locationData.latitude ?? 0;
@@ -130,7 +127,6 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
   }
 
   void stopTimer(){
-    print("Timer Stop");
     mytimer.cancel();
     controller.printSavedValue();
   }
@@ -153,14 +149,14 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
     return Scaffold(
       backgroundColor: whiteColor,
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           height: Get.height,
           width: Get.width,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(height: 100,),
+              const SizedBox(height: 100),
               HWMInputBox(hint: "Nama Trail", fieldValid: controller.nameValid.value, controller: controller.nameTextController),
               HWMInputBox(hint: "Titik Mula", fieldValid: controller.startValid.value, controller: controller.startTextController),
               HWMInputBox(hint: "Titik Akhir", fieldValid: controller.endValid.value, controller: controller.endTextController),
@@ -179,7 +175,7 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                   ),
 
 
-                  items: controller.mod_trail_options
+                  items: controller.modTrailOptions
                       .map((String item) => DropdownMenuItem<String>(
                     value: item,
                     child: Text(
@@ -191,10 +187,10 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                   ))
                       .toList(),
 
-                  value: controller.mod_trail_selectedValue.value,
+                  value: controller.modTrailSelectedValue.value,
                   onChanged: (String? value) {
                     setState(() {
-                      controller.mod_trail_selectedValue.value = value!;
+                      controller.modTrailSelectedValue.value = value!;
                     });
                   },
 
@@ -215,7 +211,7 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                   ),
 
 
-                  items: controller.kaedah_trail_options
+                  items: controller.kaedahTrailOptions
                       .map((String item) => DropdownMenuItem<String>(
                     value: item,
                     child: Text(
@@ -227,10 +223,10 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                   ))
                       .toList(),
 
-                  value: controller.kaedah_trail_selectedValue.value,
+                  value: controller.kaedahTrailSelectedValue.value,
                   onChanged: (String? value) {
                     setState(() {
-                      controller.kaedah_trail_selectedValue.value = value!;
+                      controller.kaedahTrailSelectedValue.value = value!;
                     });
                   },
 
@@ -288,7 +284,7 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                     ),
 
 
-                    items: controller.negeri_options
+                    items: controller.negeriOptions
                         .map((String item) => DropdownMenuItem<String>(
                       value: item,
                       child: Text(
@@ -300,10 +296,10 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                     ))
                         .toList(),
 
-                    value: controller.negeri_selectedValue.value,
+                    value: controller.negeriSelectedValue.value,
                     onChanged: (String? value) {
                       setState(() {
-                        controller.negeri_selectedValue.value = value!;
+                        controller.negeriSelectedValue.value = value!;
 
                       });
                     },
@@ -312,7 +308,7 @@ class _TrackerPageState extends State<TrackerPage> with TickerProviderStateMixin
                 ],),
 
               Obx(() => Text("Location: ${controller.userLat} ${controller.userLon}"),),
-              SizedBox(height: 50,),
+              const SizedBox(height: 50,),
 
               Stack(
                 clipBehavior: Clip.none,

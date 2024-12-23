@@ -2,8 +2,7 @@ import 'package:egp/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-
-import 'LoginController.dart';
+import 'login_controller.dart';
 
 class LoginPage extends GetView<LoginController> {
   const LoginPage({super.key});
@@ -31,8 +30,7 @@ class LoginPage extends GetView<LoginController> {
           hintText: 'Password',
           contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
         ),
-        style: const TextStyle(color: Colors.white70)
-    );
+        style: const TextStyle(color: Colors.white70));
 
     final loginButton = SizedBox(
       width: Get.width / 2.5,
@@ -42,8 +40,7 @@ class LoginPage extends GetView<LoginController> {
           padding: const EdgeInsets.all(15),
           backgroundColor: themeColor,
         ),
-
-        child:  const Text('Log In',
+        child: const Text('Log In',
             style: TextStyle(
                 fontSize: 20,
                 color: Colors.white,
@@ -63,11 +60,14 @@ class LoginPage extends GetView<LoginController> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              const SizedBox(height: 120, width: 100,),
+              const SizedBox(
+                height: 120,
+                width: 100,
+              ),
               Center(
                 child: Card(
                   color: Colors.black45,
-                  elevation:10,
+                  elevation: 10,
                   child: Container(
                     padding: const EdgeInsets.all(30),
                     width: Get.width * 0.85,
@@ -86,16 +86,22 @@ class LoginPage extends GetView<LoginController> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(width: 15,),
-                            Obx(()=> Visibility(visible: controller.progressVisible.value,child: const SpinKitChasingDots(color: Colors.red, size: 30,))),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Obx(() => Visibility(
+                                visible: controller.progressVisible.value,
+                                child: const SpinKitChasingDots(
+                                  color: Colors.red,
+                                  size: 30,
+                                ))),
                           ],
                         ),
-
                         const SizedBox(height: 30.0),
                         ic,
                         const SizedBox(height: 8.0),
                         password,
-                        Spacer(),
+                        const Spacer(),
                         loginButton,
                       ],
                     ),
@@ -103,7 +109,10 @@ class LoginPage extends GetView<LoginController> {
                 ),
               ),
               const SizedBox(height: 50.0),
-              Image.asset("assets/Logo512.png", height: 100,)
+              Image.asset(
+                "assets/Logo512.png",
+                height: 100,
+              )
             ],
           ),
         ),
@@ -111,4 +120,3 @@ class LoginPage extends GetView<LoginController> {
     );
   }
 }
-
