@@ -41,7 +41,7 @@ class _MapPageState extends State<MapPage> {
           },
         ),
       )
-      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mapmobile'), headers: {"Authorization": "Bearer $token"});
+      ..loadRequest(Uri.parse('https://egp.jcoders.online/api/mapmobile?2D'), headers: {"Authorization": "Bearer $token"});
   }
 
   @override
