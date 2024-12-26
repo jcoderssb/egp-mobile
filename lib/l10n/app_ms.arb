@@ -2,5 +2,13 @@
   "choicepage_index_1": "Peta",
   "choicepage_index_2": "Dashboard PSOH",
   "choicepage_index_3": "Mod Jejak",
-  "choicepage_index_4": "Muat Naik Data"
+  "choicepage_index_4": "Muat Naik Data",
+
+  "tracker_page_placeholder_1": "Nama Trail",
+  "tracker_page_placeholder_2": "Titik Mula",
+  "tracker_page_placeholder_3": "Titik Akhir",
+  "tracker_page_label_1": "Mod Trail",
+  "tracker_page_label_2": "Kaedah Trail",
+  "tracker_page_label_3": "Interval",
+  "tracker_page_label_4": "Negeri"
 }
