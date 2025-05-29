@@ -8,8 +8,8 @@ import 'package:flutter/material.dart';
 
 import '../ChoiceMap/choice_page.dart';
 import 'login_page.dart';
-class LoginController extends GetxController {
 
+class LoginController extends GetxController {
   var progressVisible = false.obs;
   var icController = TextEditingController();
   var passwordController = TextEditingController();
@@ -17,28 +17,27 @@ class LoginController extends GetxController {
   // ignore: prefer_typing_uninitialized_variables
   var authBox;
 
-
   //admin@egp.com.my
-  var loginUrl = "https://egp.jcoders.online/api/create-token";
+  var loginUrl = "https://myegp.forestry.gov.my/api/create-token";
 
-
-  _initialScreen(isLoggedIn){
-    if(!isLoggedIn){
-      Get.offAll(()=> const LoginPage());
-    }else{
+  _initialScreen(isLoggedIn) {
+    if (!isLoggedIn) {
+      Get.offAll(() => const LoginPage());
+    } else {
       LoginController controller = Get.find();
       controller.passwordController.clear();
-      Get.offAll(()=> const ChoicePage());
+      Get.offAll(() => const ChoicePage());
     }
   }
 
-  void showProgress(){
+  void showProgress() {
     progressVisible.value = true;
   }
 
-  void hideProgress(){
+  void hideProgress() {
     progressVisible.value = false;
   }
+
   @override
   void onReady() {
     super.onReady();
@@ -49,7 +48,7 @@ class LoginController extends GetxController {
     authBox = await Hive.openBox("auth");
   }
 
-  void checkLogin(){
+  void checkLogin() {
     String passwordText = passwordController.text;
     showProgress();
     login(icController.text, passwordText);
@@ -57,16 +56,17 @@ class LoginController extends GetxController {
 
   void login(String ic, password) async {
     FocusManager.instance.primaryFocus?.unfocus();
-    
+
     LoginController controller = Get.find();
-    try{
+    try {
       var url = Uri.parse(loginUrl);
 
-      var response = await http.post(url, body: {'ic': ic, 'password': password});
+      var response =
+          await http.post(url, body: {'ic': ic, 'password': password});
 
-      if (response.statusCode == 200){
+      if (response.statusCode == 200) {
         Map jsonObject = json.decode(response.body);
-        if(jsonObject["status"]=="success") {
+        if (jsonObject["status"] == "success") {
           String token = jsonObject["access_token"];
           String expiry = jsonObject["expires_at"];
           String u = jsonObject["u"];
@@ -79,42 +79,32 @@ class LoginController extends GetxController {
           nID = nid;
           moveToChoice();
         }
-
       } else {
-          Get.defaultDialog(
-              title: "Error",
-              middleText: "Enter ic and password correctly",
-              backgroundColor: Colors.white,
-              titleStyle: const TextStyle(color: Colors.red),
-              middleTextStyle: const TextStyle(color: Colors.black)
-          );
+        Get.defaultDialog(
+            title: "Error",
+            middleText: "Enter ic and password correctly",
+            backgroundColor: Colors.white,
+            titleStyle: const TextStyle(color: Colors.red),
+            middleTextStyle: const TextStyle(color: Colors.black));
       }
 
       controller.hideProgress();
-
-    }catch(e){
+    } catch (e) {
       controller.hideProgress();
       Get.snackbar("About Login", "Login message",
           backgroundColor: Colors.redAccent,
           snackPosition: SnackPosition.BOTTOM,
           titleText: const Text(
             "Login failed",
-            style: TextStyle(
-                color: Colors.white
-            ),
+            style: TextStyle(color: Colors.white),
           ),
-          messageText: Text(
-              e.toString(),
-              style: const TextStyle(
-                  color: Colors.white
-              )
-          )
-      );
+          messageText:
+              Text(e.toString(), style: const TextStyle(color: Colors.white)));
     }
   }
 
-  void moveToChoice(){
-    Get.offAll(()=> const ChoicePage());
+  void moveToChoice() {
+    Get.offAll(() => const ChoicePage());
   }
 
   void logOut() async {

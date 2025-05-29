@@ -4,14 +4,14 @@ import 'package:hive/hive.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
 
-class DashboardIndexPage extends StatefulWidget {
-  const DashboardIndexPage({super.key});
+class AboutPage extends StatefulWidget {
+  const AboutPage({super.key});
 
   @override
-  State<DashboardIndexPage> createState() => _DashboardIndexPageState();
+  State<AboutPage> createState() => _AboutPageState();
 }
 
-class _DashboardIndexPageState extends State<DashboardIndexPage> {
+class _AboutPageState extends State<AboutPage> {
   late WebViewController controller;
 
   @override
@@ -40,8 +40,7 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
           },
         ),
       )
-      ..loadRequest(
-          Uri.parse('https://myegp.forestry.gov.my/dashboards?isMobile=true'),
+      ..loadRequest(Uri.parse('https://myegp.forestry.gov.my/api/mobile/about'),
           headers: {"Authorization": "Bearer $token"});
   }
 

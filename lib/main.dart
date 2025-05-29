@@ -40,4 +40,3 @@ class EGPHome extends StatelessWidget {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:egp/ChoiceMap/tracker_list.dart';
+import 'package:egp/ChoiceMap/about_page.dart';
 import 'package:egp/locale/locale_controller.dart';
 import 'package:egp/tracker/tracker_page.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,31 @@ class ChoicePage extends StatefulWidget {
 
   @override
   State<ChoicePage> createState() => _ChoicePageState();
+}
+
+void _openAboutOverlay(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('About App'),
+        content: Text(
+          'Untuk Pengguna iPhone atau sistem iOS, pergi ke App Store dan buat carian perkataan SPDGP.\n\n'
+          'Untuk pengguna smartphone selain iPhone, yang menggunakan sistem operasi Android, pergi ke Play Store dan buat carian perkataan JPSM.',
+          textAlign: TextAlign.justify, // Makes it look more like a paragraph
+          softWrap: true, // Ensures it wraps properly
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Close'),
+            onPressed: () {
+              Navigator.of(context).pop(); // Close the modal
+            },
+          ),
+        ],
+      );
+    },
+  );
 }
 
 class _ChoicePageState extends State<ChoicePage> {
@@ -93,6 +119,22 @@ class _ChoicePageState extends State<ChoicePage> {
                   backgroundColor: themeColor,
                 ),
                 child: Text(localization.choicepage_index_4,
+                    style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold)),
+              ),
+            ),
+            const SizedBox(height: 50),
+            SizedBox(
+              width: Get.width * 0.8,
+              child: ElevatedButton(
+                onPressed: () => _openAboutOverlay(context),
+                style: TextButton.styleFrom(
+                  padding: const EdgeInsets.all(15),
+                  backgroundColor: themeColor,
+                ),
+                child: Text(localization.choicepage_index_5,
                     style: const TextStyle(
                         fontSize: 20,
                         color: Colors.white,

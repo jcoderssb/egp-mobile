@@ -15,44 +15,53 @@ class TrackerList extends StatefulWidget {
 }
 
 class _TrackerListState extends State<TrackerList> {
-
   var dataBox = Hive.box("data");
   var authBox = Hive.box("auth");
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            height: Get.height * 0.8,
-            padding: const EdgeInsets.all(20),
-            child: ListView.separated(
-              itemCount: dataBox.length,
-              itemBuilder: (context, position){
-                var trackerDataJson = jsonEncode(dataBox.getAt(position));
+        body: Column(
+      children: [
+        Container(
+          height: Get.height * 0.8,
+          padding: const EdgeInsets.all(20),
+          child: ListView.separated(
+            itemCount: dataBox.length,
+            itemBuilder: (context, position) {
+              var trackerDataJson = jsonEncode(dataBox.getAt(position));
 
-                var trackerObj = TrackerData.fromJson(jsonDecode(trackerDataJson));
+              var trackerObj =
+                  TrackerData.fromJson(jsonDecode(trackerDataJson));
 
-                return ListTile(title: Text(trackerObj.name, style: const TextStyle(color: whiteColor)),
-                  subtitle: Text("${trackerObj.startPoint} - ${trackerObj.endPoint}", style: const TextStyle(color: whiteColor),),
-                  trailing: ElevatedButton.icon(onPressed: (){
-                    uploadTrackerData(trackerObj);
-
-                  }, icon: const Icon(Icons.upload), label: const Text("Upload")),
-                );
-              }, separatorBuilder: (BuildContext context, int index) { return const Divider(); },
-            ),
+              return ListTile(
+                title: Text(trackerObj.name,
+                    style: const TextStyle(color: whiteColor)),
+                subtitle: Text(
+                  "${trackerObj.startPoint} - ${trackerObj.endPoint}",
+                  style: const TextStyle(color: whiteColor),
+                ),
+                trailing: ElevatedButton.icon(
+                    onPressed: () {
+                      uploadTrackerData(trackerObj);
+                    },
+                    icon: const Icon(Icons.upload),
+                    label: const Text("Upload")),
+              );
+            },
+            separatorBuilder: (BuildContext context, int index) {
+              return const Divider();
+            },
           ),
-          ElevatedButton(onPressed: (){
-            dataBox.clear();
-            setState(() {
-            });
-          }, child: const Text("Clear Database")),
-        ],
-      )
-    );
+        ),
+        ElevatedButton(
+            onPressed: () {
+              dataBox.clear();
+              setState(() {});
+            },
+            child: const Text("Clear Database")),
+      ],
+    ));
   }
 
   //
@@ -75,30 +84,26 @@ class _TrackerListState extends State<TrackerList> {
     };
 
     Map<String, dynamic> body = {
-      "name":data.name,
-      "mod_trail_id":data.modTrailId.toString(),
-      "kaedah_trail_id":data.kaedahTrailId.toString(),
-      "interval":data.interval.toString(),
-      "interval_type_id":data.intervalTypeId.toString(),
-      "start_point":data.startPoint,
-      "end_point":data.endPoint,
-      "point_created":jsonEncode(data.locationPoints),
-      "negeri_id":data.negeriId.toString()
+      "name": data.name,
+      "mod_trail_id": data.modTrailId.toString(),
+      "kaedah_trail_id": data.kaedahTrailId.toString(),
+      "interval": data.interval.toString(),
+      "interval_type_id": data.intervalTypeId.toString(),
+      "start_point": data.startPoint,
+      "end_point": data.endPoint,
+      "point_created": jsonEncode(data.locationPoints),
+      "negeri_id": data.negeriId.toString()
     };
 
-    var url = Uri.parse("https://egp.jcoders.online/api/rekod-trail");
+    var url = Uri.parse("https://myegp.forestry.gov.my/api/rekod-trail");
 
-    await http.post(url,
-        headers: header,
-        body: body)
-       .then((value) {
+    await http.post(url, headers: header, body: body).then((value) {
       var response = value.body;
       var resJson = jsonDecode(response);
       var status = resJson["status"];
       var message = resJson["message"];
 
       Get.snackbar(status, message);
-   });
+    });
   }
 }
-
