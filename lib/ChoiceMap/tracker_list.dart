@@ -5,7 +5,9 @@ import 'package:egp/tracker/tracker_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:egp/general_layout.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TrackerList extends StatefulWidget {
   const TrackerList({super.key});
@@ -20,48 +22,51 @@ class _TrackerListState extends State<TrackerList> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final localization = AppLocalizations.of(context)!;
+
+    return GeneralScaffold(
+        title: localization.choicepage_index_4,
         body: Column(
-      children: [
-        Container(
-          height: Get.height * 0.8,
-          padding: const EdgeInsets.all(20),
-          child: ListView.separated(
-            itemCount: dataBox.length,
-            itemBuilder: (context, position) {
-              var trackerDataJson = jsonEncode(dataBox.getAt(position));
+          children: [
+            Container(
+              height: Get.height * 0.8,
+              padding: const EdgeInsets.all(20),
+              child: ListView.separated(
+                itemCount: dataBox.length,
+                itemBuilder: (context, position) {
+                  var trackerDataJson = jsonEncode(dataBox.getAt(position));
 
-              var trackerObj =
-                  TrackerData.fromJson(jsonDecode(trackerDataJson));
+                  var trackerObj =
+                      TrackerData.fromJson(jsonDecode(trackerDataJson));
 
-              return ListTile(
-                title: Text(trackerObj.name,
-                    style: const TextStyle(color: whiteColor)),
-                subtitle: Text(
-                  "${trackerObj.startPoint} - ${trackerObj.endPoint}",
-                  style: const TextStyle(color: whiteColor),
-                ),
-                trailing: ElevatedButton.icon(
-                    onPressed: () {
-                      uploadTrackerData(trackerObj);
-                    },
-                    icon: const Icon(Icons.upload),
-                    label: const Text("Upload")),
-              );
-            },
-            separatorBuilder: (BuildContext context, int index) {
-              return const Divider();
-            },
-          ),
-        ),
-        ElevatedButton(
-            onPressed: () {
-              dataBox.clear();
-              setState(() {});
-            },
-            child: const Text("Clear Database")),
-      ],
-    ));
+                  return ListTile(
+                    title: Text(trackerObj.name,
+                        style: const TextStyle(color: whiteColor)),
+                    subtitle: Text(
+                      "${trackerObj.startPoint} - ${trackerObj.endPoint}",
+                      style: const TextStyle(color: whiteColor),
+                    ),
+                    trailing: ElevatedButton.icon(
+                        onPressed: () {
+                          uploadTrackerData(trackerObj);
+                        },
+                        icon: const Icon(Icons.upload),
+                        label: const Text("Upload")),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider();
+                },
+              ),
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  dataBox.clear();
+                  setState(() {});
+                },
+                child: const Text("Clear Database")),
+          ],
+        ));
   }
 
   //

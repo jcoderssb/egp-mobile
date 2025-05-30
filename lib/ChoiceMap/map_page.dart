@@ -2,8 +2,9 @@ import 'package:egp/global.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 import '../Constants.dart';
+import 'package:egp/general_layout.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({super.key});
@@ -47,7 +48,10 @@ class _MapPageState extends State<MapPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final localization = AppLocalizations.of(context)!;
+
+    return GeneralScaffold(
+      title: localization.choicepage_index_1,
       body: WebViewWidget(controller: controller),
     );
   }

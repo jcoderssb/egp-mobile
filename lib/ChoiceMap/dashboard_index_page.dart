@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../constants.dart';
+import 'package:egp/general_layout.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DashboardIndexPage extends StatefulWidget {
   const DashboardIndexPage({super.key});
@@ -47,7 +49,10 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    final localization = AppLocalizations.of(context)!;
+
+    return GeneralScaffold(
+      title: localization.choicepage_index_2,
       body: WebViewWidget(controller: controller),
     );
   }

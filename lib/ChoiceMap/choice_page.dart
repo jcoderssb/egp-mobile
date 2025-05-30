@@ -50,7 +50,11 @@ class _ChoicePageState extends State<ChoicePage> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: themeColor.withValues(alpha: 0.9),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [themeColor, Color.fromARGB(255, 13, 138, 125)],
+          ),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -58,15 +62,19 @@ class _ChoicePageState extends State<ChoicePage> {
           children: [
             Icon(icon, size: 40, color: Colors.white),
             const SizedBox(height: 12),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
+            Flexible(
+              child: Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
+            )
           ],
         ),
       ),
@@ -85,8 +93,8 @@ class _ChoicePageState extends State<ChoicePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'EGP Mobile',
+        title: Text(
+          localization.appTitle,
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color.fromARGB(255, 255, 255, 255),
@@ -164,119 +172,172 @@ class _ChoicePageState extends State<ChoicePage> {
           ],
         ),
       ),
-      body: Container(
-        width: double.infinity,
-        height: double.infinity,
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [themeColor, whiteColor],
-          ),
-        ),
-        child: Column(
-          children: [
-            Expanded(
-              child: GridView.count(
-                crossAxisCount: 2,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
+      body: Column(
+        children: [
+          // Top section
+          Expanded(
+            flex: 1,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              color: themeColor,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildGridButton(
-                    icon: Icons.map,
-                    label: localization.choicepage_index_1,
-                    onPressed: () => Get.to(() => const MapPage()),
+                  Text(
+                    'Hi Ahmad! 👋',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                  _buildGridButton(
-                    icon: Icons.dashboard,
-                    label: localization.choicepage_index_2,
-                    onPressed: () => Get.to(() => const DashboardIndexPage()),
+                  Text(
+                    'Role: Pentadbir',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white70,
+                    ),
                   ),
-                  _buildGridButton(
-                    icon: Icons.track_changes,
-                    label: localization.choicepage_index_3,
-                    onPressed: () => Get.to(() => const TrackerPage()),
-                  ),
-                  _buildGridButton(
-                    icon: Icons.list,
-                    label: localization.choicepage_index_4,
-                    onPressed: () => Get.to(() => const TrackerList()),
-                  ),
-                  _buildGridButton(
-                    icon: Icons.info_outline,
-                    label: localization.choicepage_index_5,
-                    onPressed: () => _openAboutOverlay(context),
+                  SizedBox(height: 40),
+                  Text(
+                    localization.greeting,
+                    style: TextStyle(
+                      fontSize: 32,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
             ),
-            const Divider(),
-            Padding(
-              padding: const EdgeInsets.only(top: 30),
-              child: Obx(() => Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton.icon(
-                        icon:
-                            localeController.currentLocale.value.languageCode ==
-                                    'en'
-                                ? const Icon(Icons.check,
-                                    size: 16, color: Colors.white)
-                                : const SizedBox(width: 16),
-                        label: const Text('English'),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: localeController
-                                      .currentLocale.value.languageCode ==
-                                  'en'
-                              ? Colors.white
-                              : themeColor,
-                          backgroundColor: localeController
-                                      .currentLocale.value.languageCode ==
-                                  'en'
-                              ? themeColor
-                              : Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
+          ),
+
+          // Bottom section
+          Expanded(
+            flex: 3,
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              color: Colors.white,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Menu',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 3,
+                      mainAxisSpacing: 16,
+                      crossAxisSpacing: 16,
+                      shrinkWrap: true,
+                      children: [
+                        _buildGridButton(
+                          icon: Icons.map,
+                          label: localization.choicepage_index_1,
+                          onPressed: () => Get.to(() => const MapPage()),
                         ),
-                        onPressed: () {
-                          localeController.changeLocale('en');
-                        },
-                      ),
-                      const SizedBox(width: 12),
-                      ElevatedButton.icon(
-                        icon:
-                            localeController.currentLocale.value.languageCode ==
-                                    'ms'
-                                ? const Icon(Icons.check,
-                                    size: 16, color: Colors.white)
-                                : const SizedBox(width: 16),
-                        label: const Text('Malay'),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: localeController
-                                      .currentLocale.value.languageCode ==
-                                  'ms'
-                              ? Colors.white
-                              : themeColor,
-                          backgroundColor: localeController
-                                      .currentLocale.value.languageCode ==
-                                  'ms'
-                              ? themeColor
-                              : Colors.transparent,
-                          shadowColor: Colors.transparent,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 12),
+                        _buildGridButton(
+                          icon: Icons.dashboard,
+                          label: localization.choicepage_index_2,
+                          onPressed: () =>
+                              Get.to(() => const DashboardIndexPage()),
                         ),
-                        onPressed: () {
-                          localeController.changeLocale('ms');
-                        },
-                      ),
-                    ],
-                  )),
+                        _buildGridButton(
+                          icon: Icons.track_changes,
+                          label: localization.choicepage_index_3,
+                          onPressed: () => Get.to(() => const TrackerPage()),
+                        ),
+                        _buildGridButton(
+                          icon: Icons.list,
+                          label: localization.choicepage_index_4,
+                          onPressed: () => Get.to(() => const TrackerList()),
+                        ),
+                        _buildGridButton(
+                          icon: Icons.info_outline,
+                          label: localization.choicepage_index_5,
+                          onPressed: () => _openAboutOverlay(context),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: Obx(() => Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ElevatedButton.icon(
+                              icon: localeController
+                                          .currentLocale.value.languageCode ==
+                                      'en'
+                                  ? const Icon(Icons.check,
+                                      size: 16, color: Colors.white)
+                                  : const SizedBox(width: 16),
+                              label: const Text('English'),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: localeController
+                                            .currentLocale.value.languageCode ==
+                                        'en'
+                                    ? Colors.white
+                                    : themeColor,
+                                backgroundColor: localeController
+                                            .currentLocale.value.languageCode ==
+                                        'en'
+                                    ? themeColor
+                                    : Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                              ),
+                              onPressed: () {
+                                localeController.changeLocale('en');
+                              },
+                            ),
+                            const SizedBox(width: 12),
+                            ElevatedButton.icon(
+                              icon: localeController
+                                          .currentLocale.value.languageCode ==
+                                      'ms'
+                                  ? const Icon(Icons.check,
+                                      size: 16, color: Colors.white)
+                                  : const SizedBox(width: 16),
+                              label: const Text('Melayu'),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: localeController
+                                            .currentLocale.value.languageCode ==
+                                        'ms'
+                                    ? Colors.white
+                                    : themeColor,
+                                backgroundColor: localeController
+                                            .currentLocale.value.languageCode ==
+                                        'ms'
+                                    ? themeColor
+                                    : Colors.transparent,
+                                shadowColor: Colors.transparent,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 12),
+                              ),
+                              onPressed: () {
+                                localeController.changeLocale('ms');
+                              },
+                            ),
+                          ],
+                        )),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
