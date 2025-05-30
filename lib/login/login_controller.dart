@@ -13,6 +13,7 @@ class LoginController extends GetxController {
   var progressVisible = false.obs;
   var icController = TextEditingController();
   var passwordController = TextEditingController();
+  var isPasswordHidden = true.obs;
 
   // ignore: prefer_typing_uninitialized_variables
   var authBox;

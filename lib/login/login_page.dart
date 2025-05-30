@@ -9,113 +9,194 @@ class LoginPage extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    final ic = TextFormField(
-      controller: controller.icController,
-      keyboardType: TextInputType.emailAddress,
-      autofocus: false,
-      decoration: const InputDecoration(
-        hintStyle: TextStyle(color: Colors.white54),
-        hintText: 'Email',
-        contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-      ),
-      style: const TextStyle(color: Colors.white70),
-    );
-
-    final password = TextFormField(
-        controller: controller.passwordController,
-        autofocus: false,
-        obscureText: false,
-        decoration: const InputDecoration(
-          hintStyle: TextStyle(color: Colors.white54),
-          hintText: 'Password',
-          contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-        ),
-        style: const TextStyle(color: Colors.white70));
-
-    final loginButton = SizedBox(
-      width: Get.width / 2.5,
-      child: ElevatedButton(
-        onPressed: controller.checkLogin,
-        style: TextButton.styleFrom(
-          padding: const EdgeInsets.all(15),
-          backgroundColor: themeColor,
-        ),
-        child: const Text('Log In',
-            style: TextStyle(
-                fontSize: 20,
-                color: Colors.white,
-                fontWeight: FontWeight.bold)),
-      ),
-    );
-
-    return Scaffold(
-      body: Container(
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: <Color>[themeColor, whiteColor]),
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 120,
-                width: 100,
-              ),
-              Center(
-                child: Card(
-                  color: Colors.black45,
-                  elevation: 10,
-                  child: Container(
-                    padding: const EdgeInsets.all(30),
-                    width: Get.width * 0.85,
-                    height: Get.width * 0.95,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        const SizedBox(height: 15.0),
-                        Row(
-                          children: [
-                            Text(
-                              "Welcome",
-                              style: TextStyle(
-                                color: whiteColor,
-                                fontSize: Get.width / 100 * 10,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(
-                              width: 15,
-                            ),
-                            Obx(() => Visibility(
-                                visible: controller.progressVisible.value,
-                                child: const SpinKitChasingDots(
-                                  color: Colors.red,
-                                  size: 30,
-                                ))),
-                          ],
-                        ),
-                        const SizedBox(height: 30.0),
-                        ic,
-                        const SizedBox(height: 8.0),
-                        password,
-                        const Spacer(),
-                        loginButton,
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 50.0),
-              Image.asset(
-                "assets/Logo512.png",
-                height: 100,
-              )
-            ],
+    final ic = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: TextFormField(
+        controller: controller.icController,
+        decoration: InputDecoration(
+          hintText: 'ID Pengguna',
+          prefixIcon: const Icon(Icons.person),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.black12),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.black12),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide:
+                const BorderSide(color: Color.fromRGBO(15, 160, 145, 1)),
           ),
         ),
+      ),
+    );
+
+    final password = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: Obx(
+        () => TextFormField(
+          obscureText: controller.isPasswordHidden.value,
+          controller: controller.passwordController,
+          decoration: InputDecoration(
+            hintText: 'Kata Laluan',
+            prefixIcon: const Icon(Icons.lock),
+            suffixIcon: IconButton(
+              icon: Icon(
+                controller.isPasswordHidden.value
+                    ? Icons.visibility_off
+                    : Icons.visibility,
+              ),
+              onPressed: () {
+                controller.isPasswordHidden.value =
+                    !controller.isPasswordHidden.value;
+              },
+            ),
+            filled: true,
+            fillColor: Colors.white,
+            contentPadding: const EdgeInsets.symmetric(vertical: 20.0),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.black12),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: const BorderSide(color: Colors.black12),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide:
+                  const BorderSide(color: Color.fromRGBO(15, 160, 145, 1)),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    final loginButton = Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 25.0),
+      child: SizedBox(
+        width: double.infinity, // Full width inside the padding
+        child: ElevatedButton(
+          onPressed: controller.checkLogin,
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(20.0),
+            backgroundColor: themeColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            elevation: 0, // optional: remove elevation if you want flat look
+          ),
+          child: const Text(
+            'Log Masuk',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+            ),
+          ),
+        ),
+      ),
+    );
+
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/bg2.jpeg'),
+          fit: BoxFit.cover,
+          colorFilter: ColorFilter.mode(
+              Colors.black.withValues(alpha: 0.5), BlendMode.colorBurn),
+        ),
+      ),
+      child: Stack(
+        children: [
+          Scaffold(
+            backgroundColor: Colors.transparent,
+            body: SafeArea(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    //Icon
+                    Image.asset(
+                      "assets/Logo512.png",
+                      height: 100,
+                    ),
+
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+
+                    SizedBox(
+                      width: Get.width * 0.7,
+                      child: Text(
+                        "SISTEM E-GEOSPATIAL PERHUTANAN",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: Get.width / 100 * 6,
+                          fontWeight: FontWeight.bold,
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(
+                      height: 60.0,
+                    ),
+
+                    const Text('Log Masuk Akaun Anda',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        )),
+
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+
+                    ic,
+
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+
+                    password,
+
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+
+                    loginButton,
+
+                    const SizedBox(
+                      height: 20.0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
+          // Spinner overlay
+          Obx(() {
+            return controller.progressVisible.value
+                ? Container(
+                    color:
+                        Colors.black.withValues(alpha: 0.5), // dim background
+                    child: const Center(
+                      child: SpinKitChasingDots(
+                        color: Colors.red,
+                        size: 50.0,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          }),
+        ],
       ),
     );
   }
