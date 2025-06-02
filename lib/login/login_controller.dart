@@ -69,6 +69,9 @@ class LoginController extends GetxController {
         Map jsonObject = json.decode(response.body);
         if (jsonObject["status"] == "success") {
           String token = jsonObject["access_token"];
+          await http.get(
+            Uri.parse('https://myegp.forestry.gov.my/login-by-token?token=$token')
+          );
           String expiry = jsonObject["expires_at"];
           String u = jsonObject["u"];
           String nid = jsonObject["negeri_id"];
