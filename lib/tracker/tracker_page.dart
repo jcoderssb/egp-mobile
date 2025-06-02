@@ -147,272 +147,250 @@ class _TrackerPageState extends State<TrackerPage>
     double height = 150;
 
     return GeneralScaffold(
-        title: localization.choicepage_index_3,
-        body: SingleChildScrollView(
-          child: SizedBox(
-            height: Get.height,
-            width: Get.width,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: 100),
-                HWMInputBox(
-                    hint: "Nama Trail",
-                    fieldValid: controller.nameValid.value,
-                    controller: controller.nameTextController),
-                HWMInputBox(
-                    hint: "Titik Mula",
-                    fieldValid: controller.startValid.value,
-                    controller: controller.startTextController),
-                HWMInputBox(
-                    hint: "Titik Akhir",
-                    fieldValid: controller.endValid.value,
-                    controller: controller.endTextController),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      title: localization.choicepage_index_3,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Card(
+                elevation: 4,
+                color: const Color.fromARGB(255, 249, 255, 248),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      HWMInputBox(
+                          hint: "Nama Trail",
+                          fieldValid: controller.nameValid.value,
+                          controller: controller.nameTextController),
+                      HWMInputBox(
+                          hint: "Titik Mula",
+                          fieldValid: controller.startValid.value,
+                          controller: controller.startTextController),
+                      HWMInputBox(
+                          hint: "Titik Akhir",
+                          fieldValid: controller.endValid.value,
+                          controller: controller.endTextController),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
+                child: Column(
                   children: [
-                    const Text("Mod Trail"),
-                    DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                      hint: Text(
-                        'Mod Trail',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
-                        ),
-                      ),
-                      items: controller.modTrailOptions
-                          .map((String item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      value: controller.modTrailSelectedValue.value,
-                      onChanged: (String? value) {
-                        setState(() {
-                          controller.modTrailSelectedValue.value = value!;
-                        });
-                      },
-                    )),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Mod Trail"),
+                        DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                          hint: Text(
+                            'Mod Trail',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: controller.modTrailOptions
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: controller.modTrailSelectedValue.value,
+                          onChanged: (String? value) {
+                            setState(() {
+                              controller.modTrailSelectedValue.value = value!;
+                            });
+                          },
+                        )),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                      color: Colors.grey,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Kedah Trail"),
+                        DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                          hint: Text(
+                            'Mod Trail',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: controller.kaedahTrailOptions
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: controller.kaedahTrailSelectedValue.value,
+                          onChanged: (String? value) {
+                            setState(() {
+                              controller.kaedahTrailSelectedValue.value =
+                                  value!;
+                            });
+                          },
+                        )),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                      color: Colors.grey,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Interval"),
+                        DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                          hint: const Text(
+                            'Interval',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.red,
+                            ),
+                          ),
+                          items: controller
+                              .getInterval()
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: controller.getSelectedValue().value,
+                          onChanged: (String? value) {
+                            setState(() {
+                              controller.setSelectedValue(value!);
+                            });
+                          },
+                        )),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                      color: Colors.grey,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Negeri"),
+                        DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                          hint: const Text(
+                            'Negeri',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.red,
+                            ),
+                          ),
+                          items: controller.negeriOptions
+                              .map((String item) => DropdownMenuItem<String>(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: controller.negeriSelectedValue.value,
+                          onChanged: (String? value) {
+                            setState(() {
+                              controller.negeriSelectedValue.value = value!;
+                            });
+                          },
+                        )),
+                      ],
+                    ),
+                    const Divider(
+                      thickness: 1,
+                      color: Colors.grey,
+                    ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Kedah Trail"),
-                    DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                      hint: Text(
-                        'Mod Trail',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
+              ),
+              Obx(
+                () => Text(
+                    "Location: ${controller.userLat} ${controller.userLon}"),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+              Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // bottom right dark pink
+                  AnimatedBuilder(
+                    animation: _topBottomAnimation,
+                    builder: (context, _) {
+                      return Positioned(
+                        bottom: _topBottomAnimation.value,
+                        right: _topBottomAnimation.value,
+                        child: Container(
+                          width: width * 0.9,
+                          height: height * 0.9,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [themeColor, blackColor],
+                              begin: Alignment.centerRight,
+                              end: Alignment.centerLeft,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: themeColor.withOpacity(0.5),
+                                blurRadius: 10,
+                                spreadRadius: 5,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      items: controller.kaedahTrailOptions
-                          .map((String item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      value: controller.kaedahTrailSelectedValue.value,
-                      onChanged: (String? value) {
-                        setState(() {
-                          controller.kaedahTrailSelectedValue.value = value!;
-                        });
-                      },
-                    )),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Interval"),
-                    DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                      hint: const Text(
-                        'Interval',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                        ),
-                      ),
-                      items: controller
-                          .getInterval()
-                          .map((String item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      value: controller.getSelectedValue().value,
-                      onChanged: (String? value) {
-                        setState(() {
-                          controller.setSelectedValue(value!);
-                        });
-                      },
-                    )),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("Negeri"),
-                    DropdownButtonHideUnderline(
-                        child: DropdownButton2<String>(
-                      hint: const Text(
-                        'Negeri',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                        ),
-                      ),
-                      items: controller.negeriOptions
-                          .map((String item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      value: controller.negeriSelectedValue.value,
-                      onChanged: (String? value) {
-                        setState(() {
-                          controller.negeriSelectedValue.value = value!;
-                        });
-                      },
-                    )),
-                  ],
-                ),
-                Obx(
-                  () => Text(
-                      "Location: ${controller.userLat} ${controller.userLon}"),
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                Stack(
-                  clipBehavior: Clip.none,
-                  children: [
-                    // bottom right dark pink
-                    AnimatedBuilder(
+                      );
+                    },
+                  ),
+                  // top left pink
+                  AnimatedBuilder(
                       animation: _topBottomAnimation,
                       builder: (context, _) {
                         return Positioned(
-                          bottom: _topBottomAnimation.value,
-                          right: _topBottomAnimation.value,
+                          top: _topBottomAnimation.value,
+                          left: _topBottomAnimation.value,
                           child: Container(
                             width: width * 0.9,
                             height: height * 0.9,
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [themeColor, blackColor],
-                                begin: Alignment.centerRight,
-                                end: Alignment.centerLeft,
-                              ),
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: themeColor.withOpacity(0.5),
-                                  blurRadius: 10,
-                                  spreadRadius: 5,
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    // top left pink
-                    AnimatedBuilder(
-                        animation: _topBottomAnimation,
-                        builder: (context, _) {
-                          return Positioned(
-                            top: _topBottomAnimation.value,
-                            left: _topBottomAnimation.value,
-                            child: Container(
-                              width: width * 0.9,
-                              height: height * 0.9,
-                              decoration: BoxDecoration(
-                                color: themeColor.withOpacity(0.5),
-                                shape: BoxShape.circle,
-                                gradient: const LinearGradient(
-                                  colors: [themeColor, blackColor],
-                                  begin: Alignment.centerLeft,
-                                  end: Alignment.centerRight,
-                                ),
-                                boxShadow: playing
-                                    ? [
-                                        BoxShadow(
-                                          color: themeColor.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          spreadRadius: 5,
-                                        ),
-                                      ]
-                                    : [],
-                              ),
-                            ),
-                          );
-                        }), // light pink
-                    // bottom left blue
-                    AnimatedBuilder(
-                        animation: _leftRightAnimation,
-                        builder: (context, _) {
-                          return Positioned(
-                            bottom: _leftRightAnimation.value,
-                            left: _leftRightAnimation.value,
-                            child: Container(
-                              width: width * 0.9,
-                              height: height * 0.9,
-                              decoration: BoxDecoration(
-                                color: blackColor,
-                                shape: BoxShape.circle,
-                                gradient: const LinearGradient(
-                                  colors: [themeColor, blackColor],
-                                  begin: Alignment.centerRight,
-                                  end: Alignment.centerLeft,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: blackColor.withOpacity(0.5),
-                                    blurRadius: 15,
-                                    spreadRadius: 5,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }),
-                    // top right dark blue
-                    AnimatedBuilder(
-                      animation: _leftRightAnimation,
-                      builder: (context, _) {
-                        return Positioned(
-                          top: _leftRightAnimation.value,
-                          right: _leftRightAnimation.value,
-                          child: Container(
-                            width: width * 0.9,
-                            height: height * 0.9,
-                            decoration: BoxDecoration(
-                              color: blackColor,
+                              color: themeColor.withOpacity(0.5),
                               shape: BoxShape.circle,
                               gradient: const LinearGradient(
                                 colors: [themeColor, blackColor],
@@ -422,7 +400,7 @@ class _TrackerPageState extends State<TrackerPage>
                               boxShadow: playing
                                   ? [
                                       BoxShadow(
-                                        color: blackColor.withOpacity(0.5),
+                                        color: themeColor.withOpacity(0.5),
                                         blurRadius: 10,
                                         spreadRadius: 5,
                                       ),
@@ -431,55 +409,115 @@ class _TrackerPageState extends State<TrackerPage>
                             ),
                           ),
                         );
-                      },
-                    ),
-                    // play button
-                    GestureDetector(
-                      onTap: () async {
-                        if (controller.shouldEnableButton()) {
-                          playing = !playing;
+                      }), // light pink
+                  // bottom left blue
+                  AnimatedBuilder(
+                      animation: _leftRightAnimation,
+                      builder: (context, _) {
+                        return Positioned(
+                          bottom: _leftRightAnimation.value,
+                          left: _leftRightAnimation.value,
+                          child: Container(
+                            width: width * 0.9,
+                            height: height * 0.9,
+                            decoration: BoxDecoration(
+                              color: blackColor,
+                              shape: BoxShape.circle,
+                              gradient: const LinearGradient(
+                                colors: [themeColor, blackColor],
+                                begin: Alignment.centerRight,
+                                end: Alignment.centerLeft,
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: blackColor.withOpacity(0.5),
+                                  blurRadius: 15,
+                                  spreadRadius: 5,
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                  // top right dark blue
+                  AnimatedBuilder(
+                    animation: _leftRightAnimation,
+                    builder: (context, _) {
+                      return Positioned(
+                        top: _leftRightAnimation.value,
+                        right: _leftRightAnimation.value,
+                        child: Container(
+                          width: width * 0.9,
+                          height: height * 0.9,
+                          decoration: BoxDecoration(
+                            color: blackColor,
+                            shape: BoxShape.circle,
+                            gradient: const LinearGradient(
+                              colors: [themeColor, blackColor],
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                            ),
+                            boxShadow: playing
+                                ? [
+                                    BoxShadow(
+                                      color: blackColor.withOpacity(0.5),
+                                      blurRadius: 10,
+                                      spreadRadius: 5,
+                                    ),
+                                  ]
+                                : [],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // play button
+                  GestureDetector(
+                    onTap: () async {
+                      if (controller.shouldEnableButton()) {
+                        playing = !playing;
 
-                          if (playing) {
-                            _playPauseAnimationController.forward();
-                            _topBottomAnimationController.forward();
-                            Future.delayed(const Duration(milliseconds: 500),
-                                () {
-                              _leftRightAnimationController.forward();
-                            });
-                            startTimer();
-                          } else {
-                            _playPauseAnimationController.reverse();
-                            _topBottomAnimationController.stop();
-                            _leftRightAnimationController.stop();
+                        if (playing) {
+                          _playPauseAnimationController.forward();
+                          _topBottomAnimationController.forward();
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            _leftRightAnimationController.forward();
+                          });
+                          startTimer();
+                        } else {
+                          _playPauseAnimationController.reverse();
+                          _topBottomAnimationController.stop();
+                          _leftRightAnimationController.stop();
 
-                            stopTimer();
-                          }
+                          stopTimer();
                         }
-                      },
-                      child: Container(
-                        width: width,
-                        height: height,
-                        decoration: const BoxDecoration(
-                          color: themeColor,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: AnimatedIcon(
-                              icon: AnimatedIcons.play_pause,
-                              progress: _playPauseAnimationController,
-                              size: 100,
-                              color: whiteColor),
-                        ),
+                      }
+                    },
+                    child: Container(
+                      width: width,
+                      height: height,
+                      decoration: const BoxDecoration(
+                        color: themeColor,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: AnimatedIcon(
+                            icon: AnimatedIcons.play_pause,
+                            progress: _playPauseAnimationController,
+                            size: 100,
+                            color: whiteColor),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+            ],
           ),
-        ));
+        ),
+      ),
+    );
   } // build
 }

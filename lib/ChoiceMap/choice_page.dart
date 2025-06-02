@@ -200,7 +200,7 @@ class _ChoicePageState extends State<ChoicePage> {
                       color: Colors.white70,
                     ),
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 30),
                   Text(
                     localization.greeting,
                     style: TextStyle(
@@ -209,6 +209,7 @@ class _ChoicePageState extends State<ChoicePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
+                  SizedBox(height: 10),
                 ],
               ),
             ),
