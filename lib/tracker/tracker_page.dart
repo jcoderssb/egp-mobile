@@ -155,6 +155,7 @@ class _TrackerPageState extends State<TrackerPage>
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
+              //Input
               Card(
                 elevation: 4,
                 color: const Color.fromARGB(255, 249, 255, 248),
@@ -182,6 +183,8 @@ class _TrackerPageState extends State<TrackerPage>
                   ),
                 ),
               ),
+
+              //Dropdown Section
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 50, vertical: 20),
@@ -227,7 +230,7 @@ class _TrackerPageState extends State<TrackerPage>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text("Kedah Trail"),
+                        const Text("Kaedah Trail"),
                         DropdownButtonHideUnderline(
                             child: DropdownButton2<String>(
                           hint: Text(
@@ -340,13 +343,18 @@ class _TrackerPageState extends State<TrackerPage>
                   ],
                 ),
               ),
+
+              //Location
               Obx(
                 () => Text(
                     "Location: ${controller.userLat} ${controller.userLon}"),
               ),
+
               const SizedBox(
                 height: 50,
               ),
+
+              //Button Play
               Stack(
                 clipBehavior: Clip.none,
                 children: [
@@ -369,7 +377,7 @@ class _TrackerPageState extends State<TrackerPage>
                             shape: BoxShape.circle,
                             boxShadow: [
                               BoxShadow(
-                                color: themeColor.withOpacity(0.5),
+                                color: themeColor.withValues(alpha: 0.5),
                                 blurRadius: 10,
                                 spreadRadius: 5,
                               ),
@@ -390,7 +398,7 @@ class _TrackerPageState extends State<TrackerPage>
                             width: width * 0.9,
                             height: height * 0.9,
                             decoration: BoxDecoration(
-                              color: themeColor.withOpacity(0.5),
+                              color: themeColor.withValues(alpha: 0.5),
                               shape: BoxShape.circle,
                               gradient: const LinearGradient(
                                 colors: [themeColor, blackColor],
@@ -400,7 +408,8 @@ class _TrackerPageState extends State<TrackerPage>
                               boxShadow: playing
                                   ? [
                                       BoxShadow(
-                                        color: themeColor.withOpacity(0.5),
+                                        color:
+                                            themeColor.withValues(alpha: 0.5),
                                         blurRadius: 10,
                                         spreadRadius: 5,
                                       ),
@@ -430,7 +439,7 @@ class _TrackerPageState extends State<TrackerPage>
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: blackColor.withOpacity(0.5),
+                                  color: blackColor.withValues(alpha: 0.5),
                                   blurRadius: 15,
                                   spreadRadius: 5,
                                 ),
@@ -460,7 +469,7 @@ class _TrackerPageState extends State<TrackerPage>
                             boxShadow: playing
                                 ? [
                                     BoxShadow(
-                                      color: blackColor.withOpacity(0.5),
+                                      color: blackColor.withValues(alpha: 0.5),
                                       blurRadius: 10,
                                       spreadRadius: 5,
                                     ),

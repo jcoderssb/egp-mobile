@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../constants.dart';
 import 'map_page.dart';
 import 'dashboard_index_page.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 class ChoicePage extends StatefulWidget {
   const ChoicePage({super.key});
@@ -63,7 +64,7 @@ class _ChoicePageState extends State<ChoicePage> {
             Icon(icon, size: 40, color: Colors.white),
             const SizedBox(height: 12),
             Flexible(
-              child: Text(
+              child: AutoSizeText(
                 label,
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -81,10 +82,10 @@ class _ChoicePageState extends State<ChoicePage> {
     );
   }
 
-  // void _logout() {
-  //   // TODO: Implement logout logic
-  //   Get.snackbar("Logout", "You have been logged out.");
-  // }
+  void _logout() {
+    // TODO: Implement logout logic
+    Get.snackbar("Logout", "You have been logged out.");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,21 +114,20 @@ class _ChoicePageState extends State<ChoicePage> {
             );
           },
         ),
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.logout),
-        //     onPressed: _logout,
-        //     color: Color.fromARGB(255, 255, 255, 255),
-        //   ),
-        // ],
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: _logout,
+            color: Color.fromARGB(255, 255, 255, 255),
+          ),
+        ],
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
+        child: Column(
           children: [
             UserAccountsDrawerHeader(
               accountName: Text('Ahmad bin Abu'),
-              accountEmail: Text('Pentadbir'),
+              accountEmail: Text(''),
               currentAccountPicture: CircleAvatar(
                 backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
               ),
@@ -135,39 +135,57 @@ class _ChoicePageState extends State<ChoicePage> {
                 color: themeColor, // your app theme color
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.map),
-              title: Text(
-                localization.choicepage_index_1,
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  ListTile(
+                    leading: Icon(Icons.map),
+                    title: Text(localization.choicepage_index_1),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const MapPage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.dashboard),
+                    title: Text(localization.choicepage_index_2),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const DashboardIndexPage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.track_changes),
+                    title: Text(localization.choicepage_index_3),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const TrackerPage());
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.list),
+                    title: Text(localization.choicepage_index_4),
+                    onTap: () {
+                      Navigator.pop(context);
+                      Get.to(() => const TrackerList());
+                    },
+                  ),
+                ],
               ),
-              onTap: () {
-                Navigator.pop(context);
-                Get.to(() => const MapPage());
-              },
             ),
+            Divider(),
             ListTile(
-              leading: Icon(Icons.dashboard),
-              title: Text(localization.choicepage_index_2),
-              onTap: () {
-                Navigator.pop(context);
-                Get.to(() => const DashboardIndexPage());
-              },
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text('Log Keluar', style: TextStyle(color: Colors.red)),
+              onTap: _logout,
             ),
-            ListTile(
-              leading: Icon(Icons.track_changes),
-              title: Text(localization.choicepage_index_3),
-              onTap: () {
-                Navigator.pop(context);
-                Get.to(() => const TrackerPage());
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.list),
-              title: Text(localization.choicepage_index_4),
-              onTap: () {
-                Navigator.pop(context);
-                Get.to(() => const TrackerList());
-              },
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12.0),
+              child: Text(
+                'Version 2.0.0',
+                style: TextStyle(color: Colors.grey),
+              ),
             ),
           ],
         ),
@@ -193,18 +211,18 @@ class _ChoicePageState extends State<ChoicePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Text(
-                    'Role: Pentadbir',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
-                    ),
-                  ),
+                  // Text(
+                  //   'Role: Pentadbir',
+                  //   style: TextStyle(
+                  //     fontSize: 14,
+                  //     color: Colors.white70,
+                  //   ),
+                  // ),
                   SizedBox(height: 30),
                   Text(
                     localization.greeting,
                     style: TextStyle(
-                      fontSize: 32,
+                      fontSize: 24,
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                     ),

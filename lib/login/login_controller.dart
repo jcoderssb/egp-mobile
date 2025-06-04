@@ -50,9 +50,29 @@ class LoginController extends GetxController {
   }
 
   void checkLogin() {
+    String icText = icController.text.trim();
     String passwordText = passwordController.text;
+
+    if (icText.isEmpty && passwordText.isEmpty) {
+      Get.snackbar("Pengesahan Ralat", "Sila isikan IC dan Kata Laluan.",
+          backgroundColor: Colors.orange, snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    if (icText.isEmpty) {
+      Get.snackbar("Pengesahan Ralat", "Sila masukkan IC anda.",
+          backgroundColor: Colors.orange, snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
+    if (passwordText.isEmpty) {
+      Get.snackbar("Pengesahan Ralat", "Sila masukkan Kata Laluan anda.",
+          backgroundColor: Colors.orange, snackPosition: SnackPosition.BOTTOM);
+      return;
+    }
+
     showProgress();
-    login(icController.text, passwordText);
+    login(icText, passwordText);
   }
 
   void login(String ic, password) async {
@@ -69,9 +89,11 @@ class LoginController extends GetxController {
         Map jsonObject = json.decode(response.body);
         if (jsonObject["status"] == "success") {
           String token = jsonObject["access_token"];
-          await http.get(
-            Uri.parse('https://myegp.forestry.gov.my/login-by-token?token=$token')
-          );
+
+          await http.get(Uri.parse(
+              'https://myegp.forestry.gov.my/login-by-token?token=$token'));
+
+          // print("Token sini " + token);
           String expiry = jsonObject["expires_at"];
           String u = jsonObject["u"];
           String nid = jsonObject["negeri_id"];
@@ -85,11 +107,12 @@ class LoginController extends GetxController {
         }
       } else {
         Get.defaultDialog(
-            title: "Error",
-            middleText: "Enter ic and password correctly",
-            backgroundColor: Colors.white,
-            titleStyle: const TextStyle(color: Colors.red),
-            middleTextStyle: const TextStyle(color: Colors.black));
+          title: "Error",
+          middleText: "Enter IC and Password correctly",
+          backgroundColor: Colors.white,
+          titleStyle: const TextStyle(color: Colors.red),
+          middleTextStyle: const TextStyle(color: Colors.black),
+        );
       }
 
       controller.hideProgress();

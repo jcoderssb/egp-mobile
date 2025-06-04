@@ -7,18 +7,20 @@ class TrackerData {
   late int negeriId;
   late int interval;
   late int intervalTypeId;
+  late bool isUploaded;
   late List<LocationPoints> locationPoints;
 
   TrackerData({
-        required this.name,
-        required this.startPoint,
-        required this.endPoint,
-        required this.modTrailId,
-        required this.kaedahTrailId,
-        required this.negeriId,
-        required this.interval,
-        required this.intervalTypeId,
-        required this.locationPoints
+    required this.name,
+    required this.startPoint,
+    required this.endPoint,
+    required this.modTrailId,
+    required this.kaedahTrailId,
+    required this.negeriId,
+    required this.interval,
+    required this.intervalTypeId,
+    required this.locationPoints,
+    this.isUploaded = false,
   });
 
   TrackerData.fromJson(Map<String, dynamic> json) {
@@ -30,6 +32,7 @@ class TrackerData {
     negeriId = json['negeri_id'];
     interval = json['interval'];
     intervalTypeId = json['interval_type_id'];
+    isUploaded = json["isUploaded"] ?? false;
     if (json['location_points'] != null) {
       locationPoints = <LocationPoints>[];
       json['location_points'].forEach((v) {
@@ -48,6 +51,7 @@ class TrackerData {
     data['negeri_id'] = negeriId;
     data['interval'] = interval;
     data['interval_type_id'] = intervalTypeId;
+    data['isUploaded'] = isUploaded;
     data['location_points'] = locationPoints.map((v) => v.toJson()).toList();
     return data;
   }

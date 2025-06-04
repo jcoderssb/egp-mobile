@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
-
 class TrackerController extends GetxController {
   List<LocationPoints> userLocations = <LocationPoints>[].obs;
 
@@ -24,7 +23,6 @@ class TrackerController extends GetxController {
   var kaedahTrailOptions = ["Kenderaan", "Berjalan"];
   var kaedahTrailSelectedValue = "Kenderaan".obs;
 
-
   var intervalOptionsKenderaan = ["30s", "1min", "1min 30s"];
   var intervalValuesKenderaan = [30, 60, 90];
 
@@ -34,12 +32,22 @@ class TrackerController extends GetxController {
   var intervalSelectedValueS = "30s".obs;
   var intervalSelectedValueM = "5min".obs;
 
-  var negeriOptions = ["Johor", "Kedah", "Kelantan", "Melaka", "Negeri Sembilan",
-                        "Pahang", "Perak", "Pulau Pinang", "Perlis", "Selangor", "Terengganu",
-                        "Wilayah Persekutuan"];
+  var negeriOptions = [
+    "Johor",
+    "Kedah",
+    "Kelantan",
+    "Melaka",
+    "Negeri Sembilan",
+    "Pahang",
+    "Perak",
+    "Pulau Pinang",
+    "Perlis",
+    "Selangor",
+    "Terengganu",
+    "Wilayah Persekutuan"
+  ];
 
   var negeriSelectedValue = "Johor".obs;
-
 
   var nameValid = true.obs;
   var startValid = true.obs;
@@ -58,60 +66,88 @@ class TrackerController extends GetxController {
     dataBox = await Hive.openBox("data");
   }
 
-  List<String> getInterval(){
-    if(kaedahTrailSelectedValue.value.contains("Kenderaan")){
+  List<String> getInterval() {
+    if (kaedahTrailSelectedValue.value.contains("Kenderaan")) {
       return intervalOptionsKenderaan;
     } else {
       return intervalOptionsBerjalan;
     }
   }
 
-  int getIntervalAmount(){
-    return kaedahTrailSelectedValue.value.contains("Kenderaan") ? intervalValuesKenderaan[intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)] :
-    intervalValuesBerjalan[intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)] * 60;
+  int getIntervalAmount() {
+    return kaedahTrailSelectedValue.value.contains("Kenderaan")
+        ? intervalValuesKenderaan[
+            intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)]
+        : intervalValuesBerjalan[
+                intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)] *
+            60;
   }
 
-  getSelectedValue(){
-    return kaedahTrailSelectedValue.value.contains("Kenderaan") ? intervalSelectedValueS : intervalSelectedValueM;
+  getSelectedValue() {
+    return kaedahTrailSelectedValue.value.contains("Kenderaan")
+        ? intervalSelectedValueS
+        : intervalSelectedValueM;
   }
 
   setSelectedValue(String value) {
-    kaedahTrailSelectedValue.value.contains("Kenderaan") ? intervalSelectedValueS.value = value : intervalSelectedValueM.value = value;
+    kaedahTrailSelectedValue.value.contains("Kenderaan")
+        ? intervalSelectedValueS.value = value
+        : intervalSelectedValueM.value = value;
   }
 
-
-  bool shouldEnableButton(){
-    return nameTextController.text.isNotEmpty && startTextController.text.isNotEmpty && endTextController.text.isNotEmpty;
+  bool shouldEnableButton() {
+    return nameTextController.text.isNotEmpty &&
+        startTextController.text.isNotEmpty &&
+        endTextController.text.isNotEmpty;
   }
 
-  getColor(){
+  getColor() {
     return shouldEnableButton() ? whiteColor : Colors.grey;
   }
-  // saves value to hive
-  printSavedValue(){
 
+  // saves value to hive
+  printSavedValue() {
     var interval = 0;
     var intervalTypeId = 0;
-    if(kaedahTrailSelectedValue.value.contains("Kenderaan")){
-      interval = intervalValuesKenderaan[intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)];
+    if (kaedahTrailSelectedValue.value.contains("Kenderaan")) {
+      interval = intervalValuesKenderaan[
+          intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)];
       intervalTypeId = 1;
     } else {
-      interval = intervalValuesBerjalan[intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)];
+      interval = intervalValuesBerjalan[
+          intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)];
       intervalTypeId = 2;
     }
 
-    var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value)+1;
-    var kaedahTrailId = kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value)+1;
-    var negeriId = negeriOptions.indexOf(negeriSelectedValue.value)+1;
+    var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value) + 1;
+    var kaedahTrailId =
+        kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value) + 1;
+    var negeriId = negeriOptions.indexOf(negeriSelectedValue.value) + 1;
 
+    TrackerData trackerData = TrackerData(
+        name: nameTextController.text,
+        startPoint: startTextController.text,
+        endPoint: endTextController.text,
+        modTrailId: modTrailId,
+        kaedahTrailId: kaedahTrailId,
+        negeriId: negeriId,
+        interval: interval,
+        intervalTypeId: intervalTypeId,
+        locationPoints: userLocations);
 
-    TrackerData trackerData = TrackerData(name: nameTextController.text, startPoint: startTextController.text, endPoint: endTextController.text,
-        modTrailId: modTrailId, kaedahTrailId: kaedahTrailId, negeriId: negeriId,
-        interval: interval, intervalTypeId: intervalTypeId, locationPoints: userLocations);
+    dataBox.put(
+        "${nameTextController.text}_data_${DateTime.now().microsecondsSinceEpoch}",
+        trackerData.toJson());
 
-    dataBox.put("${nameTextController.text}_data_${DateTime.now().microsecondsSinceEpoch}", trackerData.toJson());
-
-    Get.snackbar("Success", "Data Saved Successfully");
-
+    Get.snackbar(
+      "Berjaya",
+      "Data berjaya disimpan",
+      backgroundColor: const Color.fromARGB(200, 76, 175, 79),
+      colorText: Colors.white,
+      icon: Icon(Icons.check_circle, color: Colors.white),
+      borderRadius: 10,
+      margin: EdgeInsets.all(10),
+      duration: Duration(seconds: 2),
+    );
   }
 }
