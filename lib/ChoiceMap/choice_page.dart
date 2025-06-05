@@ -1,3 +1,4 @@
+import 'package:egp/global.dart';
 import 'package:egp/ChoiceMap/tracker_list.dart';
 import 'package:egp/locale/locale_controller.dart';
 import 'package:egp/tracker/tracker_page.dart';
@@ -8,6 +9,7 @@ import '../constants.dart';
 import 'map_page.dart';
 import 'dashboard_index_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:egp/login/login_page.dart';
 
 class ChoicePage extends StatefulWidget {
   const ChoicePage({super.key});
@@ -82,9 +84,35 @@ class _ChoicePageState extends State<ChoicePage> {
     );
   }
 
-  void _logout() {
-    // TODO: Implement logout logic
-    Get.snackbar("Logout", "You have been logged out.");
+  void _confirmLogout() {
+    Get.defaultDialog(
+      title: "Log Keluar",
+      middleText: "Anda pasti untuk log keluar?",
+      confirm: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor:
+              const Color.fromARGB(255, 40, 167, 69), // Confirm button color
+        ),
+        onPressed: _logout,
+        child: const Text("Ya"),
+      ),
+      cancel: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          foregroundColor: Colors.white,
+          backgroundColor:
+              const Color.fromARGB(255, 220, 53, 69), // Cancel button color
+        ),
+        onPressed: () => Get.back(),
+        child: const Text("Batal"),
+      ),
+    );
+  }
+
+  void _logout() async {
+    Get.snackbar("Log Keluar", "Anda telah berjaya log keluar");
+
+    Get.offAll(() => const LoginPage());
   }
 
   @override
@@ -117,7 +145,7 @@ class _ChoicePageState extends State<ChoicePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
-            onPressed: _logout,
+            onPressed: _confirmLogout,
             color: Color.fromARGB(255, 255, 255, 255),
           ),
         ],
@@ -126,11 +154,11 @@ class _ChoicePageState extends State<ChoicePage> {
         child: Column(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text('Ahmad bin Abu'),
+              accountName: Text(loginName),
               accountEmail: Text(''),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
-              ),
+                  // backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
+                  ),
               decoration: BoxDecoration(
                 color: themeColor, // your app theme color
               ),
@@ -178,7 +206,7 @@ class _ChoicePageState extends State<ChoicePage> {
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
               title: Text('Log Keluar', style: TextStyle(color: Colors.red)),
-              onTap: _logout,
+              onTap: _confirmLogout,
             ),
             Padding(
               padding: const EdgeInsets.only(bottom: 12.0),
@@ -204,7 +232,7 @@ class _ChoicePageState extends State<ChoicePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Hi Ahmad! 👋',
+                    'Hi ' + loginName + '! 👋',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

@@ -97,12 +97,15 @@ class LoginController extends GetxController {
           String expiry = jsonObject["expires_at"];
           String u = jsonObject["u"];
           String nid = jsonObject["negeri_id"];
+          String name = jsonObject["name"].toString().replaceAll("'", "");
+
           await openHive();
           authBox.put(TOKEN_KEY, token);
           authBox.put(TOKEY_EXPIRE_KEY, expiry);
 
           UID = u;
           nID = nid;
+          loginName = name;
           moveToChoice();
         }
       } else {
