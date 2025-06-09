@@ -20,20 +20,20 @@ class ChoicePage extends StatefulWidget {
 
 class _ChoicePageState extends State<ChoicePage> {
   void _openAboutOverlay(BuildContext context) {
+    final localization = AppLocalizations.of(context)!;
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('About App'),
-          content: const Text(
-            'Untuk Pengguna iPhone atau sistem iOS, pergi ke App Store dan buat carian perkataan SPDGP.\n\n'
-            'Untuk pengguna smartphone selain iPhone, yang menggunakan sistem operasi Android, pergi ke Play Store dan buat carian perkataan JPSM.',
+          title: Text(localization.about_1),
+          content: Text(
+            localization.about_2,
             textAlign: TextAlign.justify,
             softWrap: true,
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('Close'),
+              child: Text(localization.close),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

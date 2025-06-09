@@ -18,19 +18,11 @@ class TrackerController extends GetxController {
 
   // Numerics
   var modTrailOptions = ["Automatik", "Manual"];
-  var modTrailSelectedValue = "Automatik".obs;
-
   var kaedahTrailOptions = ["Kenderaan", "Berjalan"];
-  var kaedahTrailSelectedValue = "Kenderaan".obs;
-
   var intervalOptionsKenderaan = ["30s", "1min", "1min 30s"];
   var intervalValuesKenderaan = [30, 60, 90];
-
   var intervalOptionsBerjalan = ["5min", "10min", "15min"];
   var intervalValuesBerjalan = [5, 10, 15];
-
-  var intervalSelectedValueS = "30s".obs;
-  var intervalSelectedValueM = "5min".obs;
 
   var negeriOptions = [
     "Johor",
@@ -47,14 +39,19 @@ class TrackerController extends GetxController {
     "Wilayah Persekutuan"
   ];
 
-  var negeriSelectedValue = "Johor".obs;
+  var modTrailSelectedValue = RxnString();
+  var kaedahTrailSelectedValue = RxnString();
+  var intervalSelectedValueS = RxnString();
+  var intervalSelectedValueM = RxnString();
+  var negeriSelectedValue = RxnString();
 
   var nameValid = true.obs;
   var startValid = true.obs;
   var endValid = true.obs;
 
   // ignore: prefer_typing_uninitialized_variables
-  var dataBox;
+  late Box dataBox;
+  // var dataBox;
 
   @override
   void onReady() {
@@ -62,43 +59,82 @@ class TrackerController extends GetxController {
     openHive();
   }
 
+  @override
+  void onClose() {
+    nameTextController.dispose();
+    startTextController.dispose();
+    endTextController.dispose();
+    super.onClose();
+  }
+
+  void resetFields() {
+    nameTextController.clear();
+    startTextController.clear();
+    endTextController.clear();
+
+    modTrailSelectedValue.value = null;
+    negeriSelectedValue.value = null;
+    kaedahTrailSelectedValue.value = null;
+    intervalSelectedValueS.value = null;
+    intervalSelectedValueM.value = null;
+
+    userLat.value = 0.0;
+    userLon.value = 0.0;
+    userLocations.clear();
+
+    nameValid.value = true;
+    startValid.value = true;
+    endValid.value = true;
+  }
+
   openHive() async {
     dataBox = await Hive.openBox("data");
   }
 
   List<String> getInterval() {
-    if (kaedahTrailSelectedValue.value.contains("Kenderaan")) {
+    if (kaedahTrailSelectedValue.value == "Kenderaan") {
       return intervalOptionsKenderaan;
-    } else {
+    } else if (kaedahTrailSelectedValue.value == "Berjalan") {
       return intervalOptionsBerjalan;
+    } else {
+      return [];
     }
   }
 
   int getIntervalAmount() {
-    return kaedahTrailSelectedValue.value.contains("Kenderaan")
-        ? intervalValuesKenderaan[
-            intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)]
-        : intervalValuesBerjalan[
-                intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)] *
-            60;
+    if (kaedahTrailSelectedValue.value == "Kenderaan") {
+      if (intervalSelectedValueS.value == null) return 0;
+      return intervalValuesKenderaan[
+          intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
+    } else {
+      if (intervalSelectedValueM.value == null) return 0;
+      return intervalValuesBerjalan[
+              intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)] *
+          60;
+    }
   }
 
-  getSelectedValue() {
-    return kaedahTrailSelectedValue.value.contains("Kenderaan")
+  RxnString getSelectedValue() {
+    return kaedahTrailSelectedValue.value == "Kenderaan"
         ? intervalSelectedValueS
         : intervalSelectedValueM;
   }
 
-  setSelectedValue(String value) {
-    kaedahTrailSelectedValue.value.contains("Kenderaan")
-        ? intervalSelectedValueS.value = value
-        : intervalSelectedValueM.value = value;
+  void setSelectedValue(String value) {
+    if (kaedahTrailSelectedValue.value == "Kenderaan") {
+      intervalSelectedValueS.value = value;
+    } else {
+      intervalSelectedValueM.value = value;
+    }
   }
 
   bool shouldEnableButton() {
     return nameTextController.text.isNotEmpty &&
         startTextController.text.isNotEmpty &&
-        endTextController.text.isNotEmpty;
+        endTextController.text.isNotEmpty &&
+        modTrailSelectedValue.value != null &&
+        kaedahTrailSelectedValue.value != null &&
+        negeriSelectedValue.value != null;
   }
 
   getColor() {
@@ -109,20 +145,21 @@ class TrackerController extends GetxController {
   printSavedValue() {
     var interval = 0;
     var intervalTypeId = 0;
-    if (kaedahTrailSelectedValue.value.contains("Kenderaan")) {
+
+    if (kaedahTrailSelectedValue.value == "Kenderaan") {
       interval = intervalValuesKenderaan[
-          intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value)];
+          intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
       intervalTypeId = 1;
     } else {
       interval = intervalValuesBerjalan[
-          intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value)];
+          intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)];
       intervalTypeId = 2;
     }
 
-    var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value) + 1;
+    var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value!) + 1;
     var kaedahTrailId =
-        kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value) + 1;
-    var negeriId = negeriOptions.indexOf(negeriSelectedValue.value) + 1;
+        kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value!) + 1;
+    var negeriId = negeriOptions.indexOf(negeriSelectedValue.value!) + 1;
 
     TrackerData trackerData = TrackerData(
         name: nameTextController.text,
@@ -149,5 +186,7 @@ class TrackerController extends GetxController {
       margin: EdgeInsets.all(10),
       duration: Duration(seconds: 2),
     );
+
+    resetFields();
   }
 }
