@@ -102,6 +102,10 @@ class TrackerController extends GetxController {
   }
 
   int getIntervalAmount() {
+    if (modTrailSelectedValue.value == "Manual") {
+      return 0;
+    }
+
     if (kaedahTrailSelectedValue.value == "Kenderaan") {
       if (intervalSelectedValueS.value == null) return 0;
       return intervalValuesKenderaan[
@@ -147,13 +151,18 @@ class TrackerController extends GetxController {
     var intervalTypeId = 0;
 
     if (kaedahTrailSelectedValue.value == "Kenderaan") {
-      interval = intervalValuesKenderaan[
-          intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
       intervalTypeId = 1;
+      if (modTrailSelectedValue.value != "Manual") {
+        interval = intervalValuesKenderaan[
+            intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
+      }
     } else {
-      interval = intervalValuesBerjalan[
-          intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)];
       intervalTypeId = 2;
+      if (modTrailSelectedValue.value != "Manual") {
+        interval = intervalValuesBerjalan[intervalOptionsBerjalan
+                .indexOf(intervalSelectedValueM.value!)] *
+            60;
+      }
     }
 
     var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value!) + 1;
@@ -162,15 +171,16 @@ class TrackerController extends GetxController {
     var negeriId = negeriOptions.indexOf(negeriSelectedValue.value!) + 1;
 
     TrackerData trackerData = TrackerData(
-        name: nameTextController.text,
-        startPoint: startTextController.text,
-        endPoint: endTextController.text,
-        modTrailId: modTrailId,
-        kaedahTrailId: kaedahTrailId,
-        negeriId: negeriId,
-        interval: interval,
-        intervalTypeId: intervalTypeId,
-        locationPoints: userLocations);
+      name: nameTextController.text,
+      startPoint: startTextController.text,
+      endPoint: endTextController.text,
+      modTrailId: modTrailId,
+      kaedahTrailId: kaedahTrailId,
+      negeriId: negeriId,
+      interval: interval,
+      intervalTypeId: intervalTypeId,
+      locationPoints: userLocations,
+    );
 
     dataBox.put(
         "${nameTextController.text}_data_${DateTime.now().microsecondsSinceEpoch}",

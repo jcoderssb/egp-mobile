@@ -101,7 +101,7 @@ class _TrackerPageState extends State<TrackerPage>
     location.enableBackgroundMode(enable: true);
   }
 
-  Future<void> startTimer() async {
+  Future<void> startTracker() async {
     _locationData = await location.getLocation();
     var lat = _locationData.latitude ?? 0;
     var lon = _locationData.longitude ?? 0;
@@ -127,7 +127,7 @@ class _TrackerPageState extends State<TrackerPage>
     });
   }
 
-  void stopTimer() {
+  void stopTracker() {
     mytimer.cancel();
     controller.printSavedValue();
   }
@@ -508,13 +508,13 @@ class _TrackerPageState extends State<TrackerPage>
                                     const Duration(milliseconds: 500), () {
                                   _leftRightAnimationController.forward();
                                 });
-                                startTimer();
+                                startTracker();
                               } else {
                                 _playPauseAnimationController.reverse();
                                 _topBottomAnimationController.stop();
                                 _leftRightAnimationController.stop();
 
-                                stopTimer();
+                                stopTracker();
                               }
                             } else {
                               Get.snackbar(
