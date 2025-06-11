@@ -85,9 +85,10 @@ class _ChoicePageState extends State<ChoicePage> {
   }
 
   void _confirmLogout() {
+    final localization = AppLocalizations.of(context)!;
     Get.defaultDialog(
-      title: "Log Keluar",
-      middleText: "Anda pasti untuk log keluar?",
+      title: localization.logout,
+      middleText: localization.logoutConfirm,
       confirm: ElevatedButton(
         style: ElevatedButton.styleFrom(
           foregroundColor: Colors.white,
@@ -95,7 +96,7 @@ class _ChoicePageState extends State<ChoicePage> {
               const Color.fromARGB(255, 40, 167, 69), // Confirm button color
         ),
         onPressed: _logout,
-        child: const Text("Ya"),
+        child: Text(localization.yes),
       ),
       cancel: ElevatedButton(
         style: ElevatedButton.styleFrom(
@@ -104,7 +105,7 @@ class _ChoicePageState extends State<ChoicePage> {
               const Color.fromARGB(255, 220, 53, 69), // Cancel button color
         ),
         onPressed: () => Get.back(),
-        child: const Text("Batal"),
+        child: Text(localization.cancel),
       ),
     );
   }
@@ -205,7 +206,8 @@ class _ChoicePageState extends State<ChoicePage> {
             Divider(),
             ListTile(
               leading: Icon(Icons.logout, color: Colors.red),
-              title: Text('Log Keluar', style: TextStyle(color: Colors.red)),
+              title: Text(localization.logout,
+                  style: TextStyle(color: Colors.red)),
               onTap: _confirmLogout,
             ),
             Padding(

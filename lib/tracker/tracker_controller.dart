@@ -103,7 +103,7 @@ class TrackerController extends GetxController {
 
   int getIntervalAmount() {
     if (modTrailSelectedValue.value == "Manual") {
-      return 0;
+      return 30;
     }
 
     if (kaedahTrailSelectedValue.value == "Kenderaan") {
