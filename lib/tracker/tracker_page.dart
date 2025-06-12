@@ -12,7 +12,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TrackerPage extends StatefulWidget {
   const TrackerPage({super.key});
-
   @override
   State<TrackerPage> createState() => _TrackerPageState();
 }
@@ -20,7 +19,6 @@ class TrackerPage extends StatefulWidget {
 class _TrackerPageState extends State<TrackerPage>
     with TickerProviderStateMixin {
   TrackerController controller = Get.find();
-
   Location location = Location();
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
@@ -39,28 +37,22 @@ class _TrackerPageState extends State<TrackerPage>
   /// animation & animation controller for the top-right and bottom-left bubbles
   late Animation<double> _leftRightAnimation;
   late AnimationController _leftRightAnimationController;
-
-  late Timer mytimer;
-
+  late Timer? mytimer;
   @override
   void initState() {
     super.initState();
     _playPauseAnimationController = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 300));
-
     _topBottomAnimationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
-
     _leftRightAnimationController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1));
-
     _topBottomAnimation = CurvedAnimation(
             parent: _topBottomAnimationController, curve: Curves.decelerate)
         .drive(Tween<double>(begin: 5, end: -5));
     _leftRightAnimation = CurvedAnimation(
             parent: _leftRightAnimationController, curve: Curves.easeInOut)
         .drive(Tween<double>(begin: 5, end: -5));
-
     _leftRightAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _leftRightAnimationController.reverse();
@@ -68,7 +60,6 @@ class _TrackerPageState extends State<TrackerPage>
         _leftRightAnimationController.forward();
       }
     });
-
     _topBottomAnimationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         _topBottomAnimationController.reverse();
@@ -76,7 +67,6 @@ class _TrackerPageState extends State<TrackerPage>
         _topBottomAnimationController.forward();
       }
     });
-
     initLocation();
   }
 
@@ -89,7 +79,6 @@ class _TrackerPageState extends State<TrackerPage>
         return;
       }
     }
-
     _permissionGranted = await location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
@@ -97,14 +86,15 @@ class _TrackerPageState extends State<TrackerPage>
         return;
       }
     }
-
     location.enableBackgroundMode(enable: true);
   }
 
   Future<void> startTracker() async {
+    controller.userLocations.clear();
+
     _locationData = await location.getLocation();
-    var lat = _locationData.latitude ?? 0;
-    var lon = _locationData.longitude ?? 0;
+    final lat = _locationData.latitude ?? 0;
+    final lon = _locationData.longitude ?? 0;
 
     controller.userLat.value = lat;
     controller.userLon.value = lon;
@@ -112,23 +102,58 @@ class _TrackerPageState extends State<TrackerPage>
     var userLocation = LocationPoints(lat: lat, lon: lon);
     controller.userLocations.add(userLocation);
 
-    mytimer = Timer.periodic(Duration(seconds: controller.getIntervalAmount()),
+    // Only start timer if NOT Manual mode
+    if (controller.modTrailSelectedValue.value != "Manual") {
+      mytimer = Timer.periodic(
+        Duration(seconds: controller.getIntervalAmount()),
         (timer) async {
-      _locationData = await location.getLocation();
+          _locationData = await location.getLocation();
+          double lat = _locationData.latitude ?? 0;
+          double lon = _locationData.longitude ?? 0;
+          controller.userLat.value = lat;
+          controller.userLon.value = lon;
+          var newUserLocation = LocationPoints(lat: lat, lon: lon);
+          controller.userLocations.add(newUserLocation);
+        },
+      );
+    } else {
+      mytimer = null;
+    }
+  }
 
-      double lat = _locationData.latitude ?? 0;
-      double lon = _locationData.longitude ?? 0;
+  Future<void> addManualLocationPoint() async {
+    try {
+      final locationData = await location.getLocation();
+      final lat = locationData.latitude ?? 0;
+      final lon = locationData.longitude ?? 0;
+
+      controller.userLocations.add(LocationPoints(lat: lat, lon: lon));
 
       controller.userLat.value = lat;
       controller.userLon.value = lon;
-
-      var newUserLocation = LocationPoints(lat: lat, lon: lon);
-      controller.userLocations.add(newUserLocation);
-    });
+      // Show success snackbar
+      Get.snackbar(
+        'Point Added',
+        'Location recorded (${controller.userLocations.length} total)',
+        backgroundColor: Colors.green[400],
+        colorText: Colors.white,
+        duration: Duration(seconds: 2),
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Failed to get location',
+        backgroundColor: Colors.red[400],
+        colorText: Colors.white,
+      );
+    }
   }
 
   void stopTracker() {
-    mytimer.cancel();
+    mytimer?.cancel();
+    // print(
+    //     'Timer State: ${mytimer != null ? "Active" : "Inactive/Manual Mode"}');
+    // controller.debugPrintValues();
     controller.printSavedValue();
   }
 
@@ -137,7 +162,6 @@ class _TrackerPageState extends State<TrackerPage>
     _playPauseAnimationController.dispose();
     _topBottomAnimationController.dispose();
     _leftRightAnimationController.dispose();
-
     super.dispose();
   }
 
@@ -146,7 +170,6 @@ class _TrackerPageState extends State<TrackerPage>
     final localization = AppLocalizations.of(context)!;
     double width = 150;
     double height = 150;
-
     return GeneralScaffold(
       title: localization.choicepage_index_3,
       body: RefreshIndicator(
@@ -192,7 +215,6 @@ class _TrackerPageState extends State<TrackerPage>
                         ),
                       ),
                     ),
-
                     //Dropdown Section
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -200,40 +222,41 @@ class _TrackerPageState extends State<TrackerPage>
                       child: Column(
                         children: [
                           // Mod Trail
-                          Obx(() => Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Text("Mod Trail"),
-                                  DropdownButtonHideUnderline(
-                                      child: DropdownButton2<String>(
-                                    hint: Text(
-                                      'Mod Trail',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Theme.of(context).hintColor,
-                                      ),
+                          Obx(
+                            () => Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text("Mod Trail"),
+                                DropdownButtonHideUnderline(
+                                    child: DropdownButton2<String>(
+                                  hint: Text(
+                                    'Mod Trail',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).hintColor,
                                     ),
-                                    items: controller.modTrailOptions
-                                        .map((String item) =>
-                                            DropdownMenuItem<String>(
-                                              value: item,
-                                              child: Text(
-                                                item,
-                                                style: const TextStyle(
-                                                    fontSize: 14),
-                                              ),
-                                            ))
-                                        .toList(),
-                                    value:
-                                        controller.modTrailSelectedValue.value,
-                                    onChanged: (String? value) {
-                                      controller.modTrailSelectedValue.value =
-                                          value!;
-                                    },
-                                  )),
-                                ],
-                              )),
+                                  ),
+                                  items: controller.modTrailOptions
+                                      .map((String item) =>
+                                          DropdownMenuItem<String>(
+                                            value: item,
+                                            child: Text(
+                                              item,
+                                              style:
+                                                  const TextStyle(fontSize: 14),
+                                            ),
+                                          ))
+                                      .toList(),
+                                  value: controller.modTrailSelectedValue.value,
+                                  onChanged: (String? value) {
+                                    controller.modTrailSelectedValue.value =
+                                        value!;
+                                  },
+                                )),
+                              ],
+                            ),
+                          ),
+
                           const Divider(thickness: 1, color: Colors.grey),
 
                           // Kaedah Trail
@@ -358,13 +381,37 @@ class _TrackerPageState extends State<TrackerPage>
                     ),
 
                     //Location
+                    Obx(() => Text(
+                          'Points: ${controller.userLocations.length}',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        )),
                     Obx(
                       () => Text(
-                          "Location: ${controller.userLat} ${controller.userLon}"),
+                          "Koordinat: ${controller.userLat} ${controller.userLon}"),
                     ),
 
                     const SizedBox(
-                      height: 50,
+                      height: 20,
+                    ),
+
+                    //Jejak Lokasi
+                    Obx(() {
+                      if (controller.modTrailSelectedValue.value == "Manual") {
+                        return ElevatedButton(
+                          onPressed: () => addManualLocationPoint(),
+                          child: Text("Jejak Lokasi"),
+                        );
+                      } else {
+                        return SizedBox.shrink();
+                      }
+                    }),
+
+                    const SizedBox(
+                      height: 20,
                     ),
 
                     //Button Play
@@ -546,6 +593,35 @@ class _TrackerPageState extends State<TrackerPage>
                                   color: whiteColor),
                             ),
                           ),
+                        ),
+
+                        // Status Indicator
+                        Positioned(
+                          bottom: -30,
+                          left: 0,
+                          right: 0,
+                          child: Obx(() => Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(
+                                    Icons.circle,
+                                    color: controller.userLocations.isEmpty
+                                        ? Colors.red
+                                        : Colors.green,
+                                    size: 12,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    controller.userLocations.isEmpty
+                                        ? 'No points'
+                                        : 'Points: ${controller.userLocations.length}',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              )),
                         ),
                       ],
                     ),

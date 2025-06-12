@@ -145,8 +145,37 @@ class TrackerController extends GetxController {
     return shouldEnableButton() ? whiteColor : Colors.grey;
   }
 
+  // void debugPrintValues() {
+  //   print('===== DEBUG TRACKER VALUES =====');
+  //   print('Name: ${nameTextController.text}');
+  //   print('Start Point: ${startTextController.text}');
+  //   print('End Point: ${endTextController.text}');
+  //   print('Mod Trail: ${modTrailSelectedValue.value}');
+  //   print('Kaedah Trail: ${kaedahTrailSelectedValue.value}');
+  //   print('Negeri: ${negeriSelectedValue.value}');
+
+  //   // Print location points
+  //   print('Location Points (${userLocations.length}):');
+  //   for (var i = 0; i < userLocations.length; i++) {
+  //     final point = userLocations[i];
+  //     print('  Point ${i + 1}: Lat=${point.lat}, Lon=${point.lon}');
+  //   }
+
+  //   // Print calculated values
+  //   print('Calculated Values:');
+  //   print('  Interval: ${getIntervalAmount()} seconds');
+  //   print('  Should Enable Button: ${shouldEnableButton()}');
+
+  //   print('===============================');
+  // }
+
   // saves value to hive
   printSavedValue() {
+    if (userLocations.isEmpty) {
+      Get.snackbar("Error", "No location points to save!");
+      return; // Exit early if no data
+    }
+
     var interval = 0;
     var intervalTypeId = 0;
 
