@@ -43,7 +43,8 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
         ),
       )
       ..loadRequest(
-          Uri.parse('https://myegp.forestry.gov.my/dashboards?isMobile=true'),
+          Uri.parse(
+              'https://myegp.forestry.gov.my/dashboards?isMobile=true&n=1'),
           headers: {"Authorization": "Bearer $token"});
   }
 
