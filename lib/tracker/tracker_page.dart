@@ -82,6 +82,7 @@ class _TrackerPageState extends State<TrackerPage>
   }
 
   Future<void> addManualLocationPoint() async {
+    final localization = AppLocalizations.of(context)!;
     try {
       final locationData = await location.getLocation();
       final lat = locationData.latitude ?? 0;
@@ -90,7 +91,7 @@ class _TrackerPageState extends State<TrackerPage>
       controller.userLocations.add(LocationPoints(lat: lat, lon: lon));
       controller.userLat.value = lat;
       controller.userLon.value = lon;
-      // Show success snackbar
+
       Get.snackbar(
         'Point Added',
         'Location recorded (${controller.userLocations.length} total)',
@@ -100,7 +101,7 @@ class _TrackerPageState extends State<TrackerPage>
       );
     } catch (e) {
       Get.snackbar(
-        'Error',
+        localization.error,
         'Failed to get location',
         backgroundColor: Colors.red[400],
         colorText: Colors.white,
@@ -109,6 +110,7 @@ class _TrackerPageState extends State<TrackerPage>
   }
 
   Future<void> stopTracker() async {
+    final localization = AppLocalizations.of(context)!;
     bool? shouldStop = await showModalBottomSheet<bool>(
       context: context,
       builder: (BuildContext context) {
@@ -118,7 +120,7 @@ class _TrackerPageState extends State<TrackerPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Finish Tracking',
+                '${localization.finish}  ${localization.trail}',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -126,7 +128,7 @@ class _TrackerPageState extends State<TrackerPage>
               ),
               const SizedBox(height: 16),
               Text(
-                'Are you sure you want to finish tracking?',
+                localization.confirm_finish_track,
                 style: TextStyle(fontSize: 16),
               ),
               const SizedBox(height: 24),
@@ -141,7 +143,7 @@ class _TrackerPageState extends State<TrackerPage>
                         side: BorderSide(color: Colors.red),
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Cancel'),
+                      child: Text(localization.cancel),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -153,7 +155,7 @@ class _TrackerPageState extends State<TrackerPage>
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Finish'),
+                      child: Text(localization.finish),
                     ),
                   ),
                 ],
@@ -208,28 +210,32 @@ class _TrackerPageState extends State<TrackerPage>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          //Input
+                          //Input Section
                           Padding(
                             padding: const EdgeInsets.all(20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 HWMInputBox(
-                                    hint: "Nama Trail",
+                                    hint:
+                                        localization.tracker_page_placeholder_1,
                                     fieldValid: controller.nameValid.value,
                                     controller: controller.nameTextController),
                                 HWMInputBox(
-                                    hint: "Titik Mula",
+                                    hint:
+                                        localization.tracker_page_placeholder_2,
                                     fieldValid: controller.startValid.value,
                                     controller: controller.startTextController),
                                 HWMInputBox(
-                                    hint: "Titik Akhir",
+                                    hint:
+                                        localization.tracker_page_placeholder_3,
                                     fieldValid: controller.endValid.value,
                                     controller: controller.endTextController),
                               ],
                             ),
                           ),
 
+                          //Dropdown Section
                           Padding(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 20),
@@ -259,7 +265,8 @@ class _TrackerPageState extends State<TrackerPage>
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          'Pilih Mod Trail',
+                                                          localization
+                                                              .choose_trail_mode,
                                                           style: TextStyle(
                                                             fontSize: 18,
                                                             fontWeight:
@@ -336,8 +343,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                   : Colors.grey[100],
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                    BorderRadius.circular(
-                                                        12.0), // Rounded corners
+                                                    BorderRadius.circular(12.0),
                                               ),
                                               padding:
                                                   const EdgeInsets.symmetric(
@@ -364,7 +370,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                   controller
                                                           .modTrailSelectedValue
                                                           .value ??
-                                                      'Mod Trail',
+                                                      localization.trail_mode,
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Theme.of(context)
@@ -405,7 +411,8 @@ class _TrackerPageState extends State<TrackerPage>
                                                     child: Column(
                                                       children: [
                                                         Text(
-                                                          'Pilih Kaedah Trail',
+                                                          localization
+                                                              .choose_method_trail,
                                                           style: TextStyle(
                                                             fontSize: 18,
                                                             fontWeight:
@@ -530,7 +537,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                   controller
                                                           .kaedahTrailSelectedValue
                                                           .value ??
-                                                      'Kaedah Trail',
+                                                      localization.method_trail,
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Theme.of(context)
@@ -582,7 +589,8 @@ class _TrackerPageState extends State<TrackerPage>
                                                       child: Column(
                                                         children: [
                                                           Text(
-                                                            'Pilih Interval',
+                                                            localization
+                                                                .choose_interval,
                                                             style: TextStyle(
                                                               fontSize: 18,
                                                               fontWeight:
@@ -651,8 +659,12 @@ class _TrackerPageState extends State<TrackerPage>
                                                 );
                                               },
                                               style: TextButton.styleFrom(
-                                                backgroundColor:
-                                                    Colors.grey[100],
+                                                backgroundColor: controller
+                                                            .getSelectedValue()
+                                                            .value !=
+                                                        null
+                                                    ? Colors.green[100]
+                                                    : Colors.grey[100],
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
@@ -668,16 +680,26 @@ class _TrackerPageState extends State<TrackerPage>
                                                 children: [
                                                   Icon(Icons.access_time_filled,
                                                       size: 40,
-                                                      color: themeColor),
+                                                      color: controller
+                                                                      .getSelectedValue()
+                                                                      .value !=
+                                                                  null &&
+                                                              controller
+                                                                  .getSelectedValue()
+                                                                  .value!
+                                                                  .isNotEmpty
+                                                          ? themeColor
+                                                          : Colors.grey[500]),
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     controller
                                                             .getSelectedValue()
                                                             .value ??
-                                                        'Interval',
-                                                    style: const TextStyle(
+                                                        localization.interval,
+                                                    style: TextStyle(
                                                       fontSize: 14,
-                                                      color: Colors.red,
+                                                      color: Theme.of(context)
+                                                          .hintColor,
                                                     ),
                                                   ),
                                                 ],
@@ -770,8 +792,8 @@ class _TrackerPageState extends State<TrackerPage>
                             }
                           } else {
                             Get.snackbar(
-                              "Makluman",
-                              "Sila isi semua ruangan dan pilihan dropdown terlebih dahulu.",
+                              localization.attention,
+                              localization.fill_all,
                               backgroundColor:
                                   const Color.fromARGB(200, 244, 67, 54),
                               colorText: Colors.white,
@@ -803,8 +825,8 @@ class _TrackerPageState extends State<TrackerPage>
                           child: Center(
                             child: Obx(() => Text(
                                   controller.isTracking.value
-                                      ? 'STOP'
-                                      : 'START',
+                                      ? localization.finish
+                                      : localization.start,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,
@@ -827,8 +849,8 @@ class _TrackerPageState extends State<TrackerPage>
                                 ? () => addManualLocationPoint()
                                 : () {
                                     Get.snackbar(
-                                      "Makluman",
-                                      "Sila mulakan tracking terlebih dahulu",
+                                      localization.attention,
+                                      localization.track_first,
                                       backgroundColor: Colors.orange[400],
                                       colorText: Colors.white,
                                     );
@@ -878,7 +900,6 @@ class _TrackerPageState extends State<TrackerPage>
   } // build
 }
 
-// Helper widget for stat items
 Widget _buildStatItem({
   required IconData icon,
   required String value,

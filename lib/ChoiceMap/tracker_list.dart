@@ -54,6 +54,8 @@ class _TrackerListState extends State<TrackerList> {
   }
 
   Future<void> _showDeleteConfirmation() async {
+    final localization = AppLocalizations.of(context)!;
+
     await showModalBottomSheet(
       context: context,
       builder: (context) => Container(
@@ -62,14 +64,14 @@ class _TrackerListState extends State<TrackerList> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Confirm Delete',
+              localization.delete,
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
             SizedBox(height: 20),
-            Text('Are you sure you want to delete all data?'),
+            Text(localization.confirm_delete),
             SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -80,7 +82,7 @@ class _TrackerListState extends State<TrackerList> {
                     style: OutlinedButton.styleFrom(
                       padding: EdgeInsets.symmetric(vertical: 15),
                     ),
-                    child: Text('Cancel'),
+                    child: Text(localization.cancel),
                   ),
                 ),
                 SizedBox(width: 15),
@@ -95,7 +97,7 @@ class _TrackerListState extends State<TrackerList> {
                       foregroundColor: Theme.of(context).colorScheme.onError,
                       padding: EdgeInsets.symmetric(vertical: 15),
                     ),
-                    child: Text('Delete'),
+                    child: Text(localization.delete),
                   ),
                 ),
               ],
@@ -109,13 +111,14 @@ class _TrackerListState extends State<TrackerList> {
 
   // Function to handle data deletion
   Future<void> _deleteAllData() async {
+    final localization = AppLocalizations.of(context)!;
     await dataBox.clear();
     setState(() {
       uploadedIndexes.clear();
     });
     Get.snackbar(
-      "Berjaya",
-      "Data sudah dipadam",
+      localization.success,
+      localization.success_delete,
       backgroundColor: const Color.fromARGB(166, 76, 175, 79),
       colorText: Colors.white,
       icon: Icon(Icons.check_circle, color: Colors.white),
