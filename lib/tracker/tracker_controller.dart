@@ -3,10 +3,9 @@ import 'package:egp/tracker/tracker_data.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:egp/global.dart';
 
 class TrackerController extends GetxController {
-  // List<LocationPoints> userLocations = <LocationPoints>[].obs;
-
   // for app screen
   var userLat = 0.0.obs;
   var userLon = 0.0.obs;
@@ -24,26 +23,10 @@ class TrackerController extends GetxController {
   var intervalOptionsBerjalan = ["5min", "10min", "15min"];
   var intervalValuesBerjalan = [5, 10, 15];
 
-  var negeriOptions = [
-    "Johor",
-    "Kedah",
-    "Kelantan",
-    "Melaka",
-    "Negeri Sembilan",
-    "Pahang",
-    "Perak",
-    "Pulau Pinang",
-    "Perlis",
-    "Selangor",
-    "Terengganu",
-    "Wilayah Persekutuan"
-  ];
-
   var modTrailSelectedValue = RxnString();
   var kaedahTrailSelectedValue = RxnString();
   var intervalSelectedValueS = RxnString();
   var intervalSelectedValueM = RxnString();
-  var negeriSelectedValue = RxnString();
 
   var nameValid = true.obs;
   var startValid = true.obs;
@@ -53,7 +36,6 @@ class TrackerController extends GetxController {
 
   // ignore: prefer_typing_uninitialized_variables
   late Box dataBox;
-  // var dataBox;
 
   @override
   void onReady() {
@@ -75,7 +57,6 @@ class TrackerController extends GetxController {
     endTextController.clear();
 
     modTrailSelectedValue.value = null;
-    negeriSelectedValue.value = null;
     kaedahTrailSelectedValue.value = null;
     intervalSelectedValueS.value = null;
     intervalSelectedValueM.value = null;
@@ -139,8 +120,7 @@ class TrackerController extends GetxController {
         startTextController.text.isNotEmpty &&
         endTextController.text.isNotEmpty &&
         modTrailSelectedValue.value != null &&
-        kaedahTrailSelectedValue.value != null &&
-        negeriSelectedValue.value != null;
+        kaedahTrailSelectedValue.value != null;
   }
 
   getColor() {
@@ -203,7 +183,7 @@ class TrackerController extends GetxController {
     var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value!) + 1;
     var kaedahTrailId =
         kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value!) + 1;
-    var negeriId = negeriOptions.indexOf(negeriSelectedValue.value!) + 1;
+    var negeriId = int.tryParse(nID) ?? 0;
 
     TrackerData trackerData = TrackerData(
       name: nameTextController.text,

@@ -22,6 +22,109 @@ class _TrackerListState extends State<TrackerList> {
   Set<int> uploadingIndexes = {};
   Set<int> uploadedIndexes = {};
 
+  void _showTrackerDetails(BuildContext context, TrackerData trackerObj) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(trackerObj.name),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Start Point: ${trackerObj.startPoint}"),
+              Text("End Point: ${trackerObj.endPoint}"),
+              Text("Interval: ${trackerObj.interval}"),
+              SizedBox(height: 20),
+              Text("Location Points:",
+                  style: TextStyle(fontWeight: FontWeight.bold)),
+              ...trackerObj.locationPoints.map(
+                  (point) => Text("- Lat: ${point.lat}, Lng: ${point.lon}")),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Close"),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _showDeleteConfirmation() async {
+    await showModalBottomSheet(
+      context: context,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Confirm Delete',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 20),
+            Text('Are you sure you want to delete all data?'),
+            SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    child: Text('Cancel'),
+                  ),
+                ),
+                SizedBox(width: 15),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await _deleteAllData();
+                    },
+                    style: FilledButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      foregroundColor: Theme.of(context).colorScheme.onError,
+                      padding: EdgeInsets.symmetric(vertical: 15),
+                    ),
+                    child: Text('Delete'),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Function to handle data deletion
+  Future<void> _deleteAllData() async {
+    await dataBox.clear();
+    setState(() {
+      uploadedIndexes.clear();
+    });
+    Get.snackbar(
+      "Berjaya",
+      "Data sudah dipadam",
+      backgroundColor: const Color.fromARGB(166, 76, 175, 79),
+      colorText: Colors.white,
+      icon: Icon(Icons.check_circle, color: Colors.white),
+      borderRadius: 10,
+      margin: EdgeInsets.all(10),
+      duration: Duration(seconds: 2),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
@@ -159,11 +262,15 @@ class _TrackerListState extends State<TrackerList> {
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        Text(
-                                          "${trackerObj.startPoint} → ${trackerObj.endPoint}",
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: Colors.grey[600],
+                                        InkWell(
+                                          onTap: () => _showTrackerDetails(
+                                              context, trackerObj),
+                                          child: Text(
+                                            'Lihat ->',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Colors.blueAccent,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -186,22 +293,7 @@ class _TrackerListState extends State<TrackerList> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: FilledButton.icon(
-                  onPressed: () async {
-                    await dataBox.clear();
-                    setState(() {
-                      uploadedIndexes.clear();
-                    });
-                    Get.snackbar(
-                      "Berjaya",
-                      "Data sudah dipadam",
-                      backgroundColor: const Color.fromARGB(166, 76, 175, 79),
-                      colorText: Colors.white,
-                      icon: Icon(Icons.check_circle, color: Colors.white),
-                      borderRadius: 10,
-                      margin: EdgeInsets.all(10),
-                      duration: Duration(seconds: 2),
-                    );
-                  },
+                  onPressed: _showDeleteConfirmation,
                   icon: Icon(Icons.delete_forever),
                   label: Text("Clear Database"),
                   style: FilledButton.styleFrom(

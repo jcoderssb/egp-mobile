@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:egp/Constants.dart';
 import 'package:egp/general_layout.dart';
 import 'package:egp/helper/HWMInputBox.dart';
@@ -23,15 +22,11 @@ class _TrackerPageState extends State<TrackerPage>
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData _locationData;
-
-  /// when playing, animation will be played
-  bool playing = false;
-
   late Timer? mytimer;
+
   @override
   void initState() {
     super.initState();
-
     initLocation();
   }
 
@@ -61,7 +56,6 @@ class _TrackerPageState extends State<TrackerPage>
     _locationData = await location.getLocation();
     final lat = _locationData.latitude ?? 0;
     final lon = _locationData.longitude ?? 0;
-
     controller.userLat.value = lat;
     controller.userLon.value = lon;
 
@@ -94,7 +88,6 @@ class _TrackerPageState extends State<TrackerPage>
       final lon = locationData.longitude ?? 0;
 
       controller.userLocations.add(LocationPoints(lat: lat, lon: lon));
-
       controller.userLat.value = lat;
       controller.userLon.value = lon;
       // Show success snackbar
@@ -115,13 +108,69 @@ class _TrackerPageState extends State<TrackerPage>
     }
   }
 
-  void stopTracker() {
-    controller.isTracking.value = false;
-    mytimer?.cancel();
-    // print(
-    //     'Timer State: ${mytimer != null ? "Active" : "Inactive/Manual Mode"}');
-    // controller.debugPrintValues();
-    controller.printSavedValue();
+  Future<void> stopTracker() async {
+    bool? shouldStop = await showModalBottomSheet<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Finish Tracking',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Are you sure you want to finish tracking?',
+                style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.red,
+                        side: BorderSide(color: Colors.red),
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text('Cancel'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                      ),
+                      child: Text('Finish'),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
+          ),
+        );
+      },
+    );
+
+    if (shouldStop ?? false) {
+      controller.isTracking.value = false;
+      mytimer?.cancel();
+      // controller.debugPrintValues();
+      controller.printSavedValue();
+    }
   }
 
   @override
@@ -129,38 +178,16 @@ class _TrackerPageState extends State<TrackerPage>
     super.dispose();
   }
 
-  // final modalBottomSheetStyle = (BuildContext context) => Container(
-  //       height: 300,
-  //       padding: const EdgeInsets.all(16),
-  //       child: Column(
-  //         children: [
-  //           Text(
-  //             'Sila pilih',
-  //             style: TextStyle(
-  //               fontSize: 18,
-  //               fontWeight: FontWeight.bold,
-  //               color: Theme.of(context).primaryColor,
-  //             ),
-  //           ),
-  //           const SizedBox(height: 16),
-  //           Expanded(
-  //             child: ListView.builder(
-  //               itemCount: 0, // Will be overridden in each usage
-  //               itemBuilder: (context, index) => ListTile(
-  //                 title: Text(''),
-  //                 trailing: Icon(Icons.check, color: Colors.green),
-  //               ),
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     );
+  IconData _getKaedahTrailIcon(String? value) {
+    if (value == null) return Icons.directions_walk;
+    return value.toLowerCase().contains('kenderaan')
+        ? Icons.directions_car
+        : Icons.directions_walk;
+  }
 
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
-    // double width = 150;
-    // double height = 150;
     return GeneralScaffold(
       title: localization.choicepage_index_3,
       body: Column(
@@ -182,272 +209,366 @@ class _TrackerPageState extends State<TrackerPage>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           //Input
-                          Card(
-                            elevation: 4,
-                            color: const Color.fromARGB(255, 249, 255, 248),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  HWMInputBox(
-                                      hint: "Nama Trail",
-                                      fieldValid: controller.nameValid.value,
-                                      controller:
-                                          controller.nameTextController),
-                                  HWMInputBox(
-                                      hint: "Titik Mula",
-                                      fieldValid: controller.startValid.value,
-                                      controller:
-                                          controller.startTextController),
-                                  HWMInputBox(
-                                      hint: "Titik Akhir",
-                                      fieldValid: controller.endValid.value,
-                                      controller: controller.endTextController),
-                                ],
-                              ),
+                          Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                HWMInputBox(
+                                    hint: "Nama Trail",
+                                    fieldValid: controller.nameValid.value,
+                                    controller: controller.nameTextController),
+                                HWMInputBox(
+                                    hint: "Titik Mula",
+                                    fieldValid: controller.startValid.value,
+                                    controller: controller.startTextController),
+                                HWMInputBox(
+                                    hint: "Titik Akhir",
+                                    fieldValid: controller.endValid.value,
+                                    controller: controller.endTextController),
+                              ],
                             ),
                           ),
-                          //Dropdown Section
+
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 20),
+                                horizontal: 30, vertical: 20),
                             child: Column(
                               children: [
-                                // Mod Trail
-                                Obx(
-                                  () => Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Mod Trail"),
-                                      TextButton(
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                height: 300,
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      'Select Mod Trail',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        itemCount: controller
-                                                            .modTrailOptions
-                                                            .length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          final option = controller
-                                                                  .modTrailOptions[
-                                                              index];
-                                                          final isSelected =
-                                                              controller
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    // Mod Trail Dropdown
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: Obx(
+                                          () => TextButton(
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                    height: 300,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          'Pilih Mod Trail',
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 16),
+                                                        Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                            itemCount: controller
+                                                                .modTrailOptions
+                                                                .length,
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
+                                                              final option =
+                                                                  controller
+                                                                          .modTrailOptions[
+                                                                      index];
+                                                              final isSelected =
+                                                                  controller
+                                                                          .modTrailSelectedValue
+                                                                          .value ==
+                                                                      option;
+                                                              return ListTile(
+                                                                title: Text(
+                                                                  option,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: isSelected
+                                                                        ? themeColor
+                                                                        : Colors
+                                                                            .black,
+                                                                    fontWeight: isSelected
+                                                                        ? FontWeight
+                                                                            .bold
+                                                                        : FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                                ),
+                                                                trailing: isSelected
+                                                                    ? Icon(
+                                                                        Icons
+                                                                            .check,
+                                                                        color:
+                                                                            themeColor)
+                                                                    : null,
+                                                                onTap: () {
+                                                                  controller
                                                                       .modTrailSelectedValue
-                                                                      .value ==
-                                                                  option;
-                                                          return ListTile(
-                                                            title: Text(
-                                                              option,
-                                                              style: TextStyle(
-                                                                color: isSelected
-                                                                    ? themeColor
-                                                                    : Colors
-                                                                        .black,
-                                                                fontWeight: isSelected
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal,
-                                                              ),
-                                                            ),
-                                                            trailing: isSelected
-                                                                ? Icon(
-                                                                    Icons.check,
-                                                                    color:
-                                                                        themeColor)
-                                                                : null,
-                                                            onTap: () {
-                                                              controller
-                                                                  .modTrailSelectedValue
-                                                                  .value = option;
-                                                              Navigator.pop(
-                                                                  context);
+                                                                      .value = option;
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              );
                                                             },
-                                                          );
-                                                        },
-                                                      ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  );
+                                                },
                                               );
                                             },
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              controller.modTrailSelectedValue
-                                                      .value ??
-                                                  'Sila pilih',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color:
-                                                    Theme.of(context).hintColor,
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: controller
+                                                          .modTrailSelectedValue
+                                                          .value !=
+                                                      null
+                                                  ? Colors.green[100]
+                                                  : Colors.grey[100],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        12.0), // Rounded corners
                                               ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12.0),
                                             ),
-                                            Icon(
-                                              Icons.arrow_drop_down,
-                                              color:
-                                                  Theme.of(context).hintColor,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.track_changes,
+                                                    size: 40,
+                                                    color: controller
+                                                                    .modTrailSelectedValue
+                                                                    .value !=
+                                                                null &&
+                                                            controller
+                                                                .modTrailSelectedValue
+                                                                .value!
+                                                                .isNotEmpty
+                                                        ? themeColor
+                                                        : Colors.grey[500]),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  controller
+                                                          .modTrailSelectedValue
+                                                          .value ??
+                                                      'Mod Trail',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Theme.of(context)
+                                                        .hintColor,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
 
-                                const Divider(thickness: 1, color: Colors.grey),
+                                    // Vertical divider
+                                    Container(
+                                      width: 1,
+                                      height: 60,
+                                      color: Colors.grey[300],
+                                    ),
 
-                                // Kaedah Trail
-                                Obx(
-                                  () => Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Kaedah Trail"),
-                                      TextButton(
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                height: 300,
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      'Pilih Kaedah Trail',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        itemCount: controller
-                                                            .kaedahTrailOptions
-                                                            .length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          final option = controller
-                                                                  .kaedahTrailOptions[
-                                                              index];
-                                                          final isSelected =
-                                                              controller
+                                    // Kaedah Trail Dropdown
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        child: Obx(
+                                          () => TextButton(
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return Container(
+                                                    height: 300,
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            16),
+                                                    child: Column(
+                                                      children: [
+                                                        Text(
+                                                          'Pilih Kaedah Trail',
+                                                          style: TextStyle(
+                                                            fontSize: 18,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 16),
+                                                        Expanded(
+                                                          child:
+                                                              ListView.builder(
+                                                            itemCount: controller
+                                                                .kaedahTrailOptions
+                                                                .length,
+                                                            itemBuilder:
+                                                                (BuildContext
+                                                                        context,
+                                                                    int index) {
+                                                              final option =
+                                                                  controller
+                                                                          .kaedahTrailOptions[
+                                                                      index];
+                                                              final isSelected =
+                                                                  controller
+                                                                          .kaedahTrailSelectedValue
+                                                                          .value ==
+                                                                      option;
+                                                              // Determine icon based on option
+                                                              final icon = option
+                                                                      .toLowerCase()
+                                                                      .contains(
+                                                                          'kenderaan')
+                                                                  ? Icons
+                                                                      .directions_car
+                                                                  : Icons
+                                                                      .directions_walk;
+
+                                                              return ListTile(
+                                                                leading: Icon(
+                                                                    icon,
+                                                                    color: isSelected
+                                                                        ? themeColor
+                                                                        : Colors
+                                                                            .grey),
+                                                                title: Text(
+                                                                  option,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: isSelected
+                                                                        ? themeColor
+                                                                        : Colors
+                                                                            .black,
+                                                                    fontWeight: isSelected
+                                                                        ? FontWeight
+                                                                            .bold
+                                                                        : FontWeight
+                                                                            .normal,
+                                                                  ),
+                                                                ),
+                                                                trailing: isSelected
+                                                                    ? Icon(
+                                                                        Icons
+                                                                            .check,
+                                                                        color:
+                                                                            themeColor)
+                                                                    : null,
+                                                                onTap: () {
+                                                                  controller
                                                                       .kaedahTrailSelectedValue
-                                                                      .value ==
-                                                                  option;
-                                                          return ListTile(
-                                                            title: Text(
-                                                              option,
-                                                              style: TextStyle(
-                                                                color: isSelected
-                                                                    ? themeColor
-                                                                    : Colors
-                                                                        .black,
-                                                                fontWeight: isSelected
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal,
-                                                              ),
-                                                            ),
-                                                            trailing: isSelected
-                                                                ? Icon(
-                                                                    Icons.check,
-                                                                    color:
-                                                                        themeColor)
-                                                                : null,
-                                                            onTap: () {
-                                                              controller
-                                                                  .kaedahTrailSelectedValue
-                                                                  .value = option;
-                                                              Navigator.pop(
-                                                                  context);
+                                                                      .value = option;
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              );
                                                             },
-                                                          );
-                                                        },
-                                                      ),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  );
+                                                },
                                               );
                                             },
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              controller
-                                                      .kaedahTrailSelectedValue
-                                                      .value ??
-                                                  'Sila pilih',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color:
-                                                    Theme.of(context).hintColor,
+                                            style: TextButton.styleFrom(
+                                              backgroundColor: controller
+                                                          .kaedahTrailSelectedValue
+                                                          .value !=
+                                                      null
+                                                  ? Colors.green[100]
+                                                  : Colors.grey[100],
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12.0),
                                               ),
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 12.0),
                                             ),
-                                            Icon(
-                                              Icons.arrow_drop_down,
-                                              color:
-                                                  Theme.of(context).hintColor,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                // Dynamic icon based on selected value
+                                                Icon(
+                                                  _getKaedahTrailIcon(controller
+                                                      .kaedahTrailSelectedValue
+                                                      .value),
+                                                  size: 40,
+                                                  color: controller
+                                                                  .kaedahTrailSelectedValue
+                                                                  .value !=
+                                                              null &&
+                                                          controller
+                                                              .kaedahTrailSelectedValue
+                                                              .value!
+                                                              .isNotEmpty
+                                                      ? themeColor
+                                                      : Colors.grey[500],
+                                                ),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  controller
+                                                          .kaedahTrailSelectedValue
+                                                          .value ??
+                                                      'Kaedah Trail',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Theme.of(context)
+                                                        .hintColor,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          ],
+                                          ),
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    ),
 
-                                const Divider(thickness: 1, color: Colors.grey),
+                                    // Vertical divider
+                                    Obx(() {
+                                      if (controller
+                                              .modTrailSelectedValue.value !=
+                                          "Manual") {
+                                        return Container(
+                                          width: 1,
+                                          height: 60,
+                                          color: Colors.grey[300],
+                                        );
+                                      } else {
+                                        return const SizedBox(width: 0);
+                                      }
+                                    }),
 
-                                // Interval
-                                Obx(() {
-                                  if (controller.modTrailSelectedValue.value !=
-                                      "Manual") {
-                                    return Column(
-                                      children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            const Text("Interval"),
-                                            TextButton(
+                                    // Interval Dropdown
+                                    Obx(() {
+                                      if (controller
+                                              .modTrailSelectedValue.value !=
+                                          "Manual") {
+                                        return Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4.0),
+                                            child: TextButton(
                                               onPressed: () {
                                                 showModalBottomSheet(
                                                   context: context,
@@ -529,9 +650,26 @@ class _TrackerPageState extends State<TrackerPage>
                                                   },
                                                 );
                                               },
-                                              child: Row(
-                                                mainAxisSize: MainAxisSize.min,
+                                              style: TextButton.styleFrom(
+                                                backgroundColor:
+                                                    Colors.grey[100],
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12.0),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 12.0),
+                                              ),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
+                                                  Icon(Icons.access_time_filled,
+                                                      size: 40,
+                                                      color: themeColor),
+                                                  const SizedBox(height: 4),
                                                   Text(
                                                     controller
                                                             .getSelectedValue()
@@ -542,133 +680,17 @@ class _TrackerPageState extends State<TrackerPage>
                                                       color: Colors.red,
                                                     ),
                                                   ),
-                                                  const Icon(
-                                                      Icons.arrow_drop_down,
-                                                      color: Colors.red),
                                                 ],
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        const Divider(
-                                            thickness: 1, color: Colors.grey),
-                                      ],
-                                    );
-                                  } else {
-                                    return const SizedBox.shrink();
-                                  }
-                                }),
-
-                                // Negeri
-                                Obx(
-                                  () => Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text("Negeri"),
-                                      TextButton(
-                                        onPressed: () {
-                                          showModalBottomSheet(
-                                            context: context,
-                                            builder: (BuildContext context) {
-                                              return Container(
-                                                height: 300,
-                                                padding:
-                                                    const EdgeInsets.all(16),
-                                                child: Column(
-                                                  children: [
-                                                    Text(
-                                                      'Pilih Negeri',
-                                                      style: TextStyle(
-                                                        fontSize: 18,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        // color: Theme.of(context)
-                                                        //     .primaryColor,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(height: 16),
-                                                    Expanded(
-                                                      child: ListView.builder(
-                                                        itemCount: controller
-                                                            .negeriOptions
-                                                            .length,
-                                                        itemBuilder:
-                                                            (BuildContext
-                                                                    context,
-                                                                int index) {
-                                                          final option = controller
-                                                                  .negeriOptions[
-                                                              index];
-                                                          final isSelected =
-                                                              controller
-                                                                      .negeriSelectedValue
-                                                                      .value ==
-                                                                  option;
-                                                          return ListTile(
-                                                            title: Text(
-                                                              option,
-                                                              style: TextStyle(
-                                                                color: isSelected
-                                                                    ? themeColor
-                                                                    : Colors
-                                                                        .black,
-                                                                fontWeight: isSelected
-                                                                    ? FontWeight
-                                                                        .bold
-                                                                    : FontWeight
-                                                                        .normal,
-                                                              ),
-                                                            ),
-                                                            trailing: isSelected
-                                                                ? Icon(
-                                                                    Icons.check,
-                                                                    color:
-                                                                        themeColor)
-                                                                : null,
-                                                            onTap: () {
-                                                              controller
-                                                                  .negeriSelectedValue
-                                                                  .value = option;
-                                                              Navigator.pop(
-                                                                  context);
-                                                            },
-                                                          );
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Text(
-                                              controller.negeriSelectedValue
-                                                      .value ??
-                                                  'Sila pilih',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                color:
-                                                    Theme.of(context).hintColor,
-                                              ),
-                                            ),
-                                            Icon(
-                                              Icons.arrow_drop_down,
-                                              color:
-                                                  Theme.of(context).hintColor,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                          ),
+                                        );
+                                      } else {
+                                        return const SizedBox(width: 0);
+                                      }
+                                    }),
+                                  ],
                                 ),
-
-                                const Divider(thickness: 1, color: Colors.grey),
                               ],
                             ),
                           ),
@@ -744,7 +766,7 @@ class _TrackerPageState extends State<TrackerPage>
                             if (!controller.isTracking.value) {
                               await startTracker();
                             } else {
-                              stopTracker();
+                              await stopTracker();
                             }
                           } else {
                             Get.snackbar(
@@ -801,13 +823,23 @@ class _TrackerPageState extends State<TrackerPage>
                           padding: const EdgeInsets.only(left: 20),
                           child: GestureDetector(
                             behavior: HitTestBehavior.opaque,
-                            onTap: () => addManualLocationPoint(),
+                            onTap: controller.isTracking.value
+                                ? () => addManualLocationPoint()
+                                : () {
+                                    Get.snackbar(
+                                      "Makluman",
+                                      "Sila mulakan tracking terlebih dahulu",
+                                      backgroundColor: Colors.orange[400],
+                                      colorText: Colors.white,
+                                    );
+                                  },
                             child: Container(
                               width: 60, // Slightly smaller than main button
                               height: 60,
                               decoration: BoxDecoration(
-                                color: Colors
-                                    .blue, // Different color to distinguish
+                                color: controller.isTracking.value
+                                    ? Colors.blue
+                                    : Colors.grey,
                                 shape: BoxShape.circle,
                                 boxShadow: [
                                   BoxShadow(
