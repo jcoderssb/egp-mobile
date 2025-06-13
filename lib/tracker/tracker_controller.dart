@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 class TrackerController extends GetxController {
-  List<LocationPoints> userLocations = <LocationPoints>[].obs;
+  // List<LocationPoints> userLocations = <LocationPoints>[].obs;
 
   // for app screen
   var userLat = 0.0.obs;
@@ -48,6 +48,8 @@ class TrackerController extends GetxController {
   var nameValid = true.obs;
   var startValid = true.obs;
   var endValid = true.obs;
+  var isTracking = false.obs;
+  var userLocations = <LocationPoints>[].obs;
 
   // ignore: prefer_typing_uninitialized_variables
   late Box dataBox;
@@ -143,6 +145,10 @@ class TrackerController extends GetxController {
 
   getColor() {
     return shouldEnableButton() ? whiteColor : Colors.grey;
+  }
+
+  void setModTrailSelection(String value) {
+    modTrailSelectedValue.value = value;
   }
 
   // void debugPrintValues() {
