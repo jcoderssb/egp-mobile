@@ -26,10 +26,12 @@ class _ChoicePageState extends State<ChoicePage> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(localization.about_1),
-          content: Text(
-            localization.about_2,
-            textAlign: TextAlign.justify,
-            softWrap: true,
+          content: SingleChildScrollView(
+            child: Text(
+              localization.about_2,
+              textAlign: TextAlign.justify,
+              softWrap: true,
+            ),
           ),
           actions: <Widget>[
             TextButton(

@@ -1,4 +1,5 @@
 import 'package:egp/global.dart';
+import 'package:egp/network/api_endpoints.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -42,9 +43,7 @@ class _DashboardIndexPageState extends State<DashboardIndexPage> {
           },
         ),
       )
-      ..loadRequest(
-          Uri.parse(
-              'https://myegp.forestry.gov.my/dashboards?isMobile=true&n=1'),
+      ..loadRequest(Uri.parse(ApiEndpoints.dashboardPage),
           headers: {"Authorization": "Bearer $token"});
   }
 

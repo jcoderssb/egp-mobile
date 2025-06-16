@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 
 class GeneralScaffold extends StatelessWidget {
   final String title;

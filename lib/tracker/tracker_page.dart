@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 import 'package:egp/general_layout.dart';
 import 'package:egp/helper/HWMInputBox.dart';
 import 'package:egp/tracker/tracker_controller.dart';
@@ -36,6 +36,9 @@ class _TrackerPageState extends State<TrackerPage>
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();
       if (!_serviceEnabled) {
+        if (mounted) {
+          Get.snackbar('Error', 'Location services are required');
+        }
         return;
       }
     }
@@ -43,6 +46,9 @@ class _TrackerPageState extends State<TrackerPage>
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
+        if (mounted) {
+          Get.snackbar('Error', 'Location permissions are required');
+        }
         return;
       }
     }
@@ -67,13 +73,20 @@ class _TrackerPageState extends State<TrackerPage>
       mytimer = Timer.periodic(
         Duration(seconds: controller.getIntervalAmount()),
         (timer) async {
-          _locationData = await location.getLocation();
-          double lat = _locationData.latitude ?? 0;
-          double lon = _locationData.longitude ?? 0;
-          controller.userLat.value = lat;
-          controller.userLon.value = lon;
-          var newUserLocation = LocationPoints(lat: lat, lon: lon);
-          controller.userLocations.add(newUserLocation);
+          controller.startAddingPoint();
+          try {
+            _locationData = await location.getLocation();
+            double lat = _locationData.latitude ?? 0;
+            double lon = _locationData.longitude ?? 0;
+            controller.userLat.value = lat;
+            controller.userLon.value = lon;
+            var newUserLocation = LocationPoints(lat: lat, lon: lon);
+            controller.userLocations.add(newUserLocation);
+          } catch (e) {
+            debugPrint('Error getting automatic location: $e');
+          } finally {
+            controller.finishAddingPoint(); // Hide indicator
+          }
         },
       );
     } else {
@@ -84,6 +97,7 @@ class _TrackerPageState extends State<TrackerPage>
   Future<void> addManualLocationPoint() async {
     final localization = AppLocalizations.of(context)!;
     try {
+      controller.startAddingPoint();
       final locationData = await location.getLocation();
       final lat = locationData.latitude ?? 0;
       final lon = locationData.longitude ?? 0;
@@ -106,6 +120,8 @@ class _TrackerPageState extends State<TrackerPage>
         backgroundColor: Colors.red[400],
         colorText: Colors.white,
       );
+    } finally {
+      controller.finishAddingPoint();
     }
   }
 
@@ -113,27 +129,34 @@ class _TrackerPageState extends State<TrackerPage>
     final localization = AppLocalizations.of(context)!;
     bool? shouldStop = await showModalBottomSheet<bool>(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (BuildContext context) {
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 '${localization.finish}  ${localization.trail}',
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               Text(
                 localization.confirm_finish_track,
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[600],
+                ),
               ),
               const SizedBox(height: 24),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Expanded(
                     child: OutlinedButton(
@@ -142,11 +165,16 @@ class _TrackerPageState extends State<TrackerPage>
                         foregroundColor: Colors.red,
                         side: BorderSide(color: Colors.red),
                         padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      child: Text(localization.cancel),
+                      child: Text(
+                        localization.cancel,
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 12),
                   Expanded(
                     child: ElevatedButton(
                       onPressed: () => Navigator.pop(context, true),
@@ -154,8 +182,14 @@ class _TrackerPageState extends State<TrackerPage>
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
                         padding: EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
-                      child: Text(localization.finish),
+                      child: Text(
+                        localization.finish,
+                        style: TextStyle(color: Colors.white),
+                      ),
                     ),
                   ),
                 ],
@@ -177,6 +211,8 @@ class _TrackerPageState extends State<TrackerPage>
 
   @override
   void dispose() {
+    controller.resetFields();
+    mytimer?.cancel();
     super.dispose();
   }
 
@@ -190,6 +226,7 @@ class _TrackerPageState extends State<TrackerPage>
   @override
   Widget build(BuildContext context) {
     final localization = AppLocalizations.of(context)!;
+
     return GeneralScaffold(
       title: localization.choicepage_index_3,
       body: Column(
@@ -197,8 +234,14 @@ class _TrackerPageState extends State<TrackerPage>
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
+                if (controller.isTracking.value) {
+                  await stopTracker();
+                }
                 controller.resetFields();
-                setState(() {});
+                if (mounted) {
+                  setState(() {});
+                }
+                return;
               },
               child: CustomScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
@@ -210,9 +253,85 @@ class _TrackerPageState extends State<TrackerPage>
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
+                          // Tracking Status
+                          Obx(() {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Main status row
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        margin: const EdgeInsets.only(right: 8),
+                                        decoration: BoxDecoration(
+                                          color: controller.isTracking.value
+                                              ? Colors.green
+                                              : Colors.grey,
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            controller.isTracking.value
+                                                ? "TRACKING ACTIVE"
+                                                : "TRACKING INACTIVE",
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+
+                                  // Tracking status
+                                  if (controller.isAddingPoint.value)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          SizedBox(
+                                            width: 12,
+                                            height: 12,
+                                            child: CircularProgressIndicator(
+                                              strokeWidth: 2,
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                      themeColor),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            controller.currentOperation.value,
+                                            style: TextStyle(
+                                              color: themeColor,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          }),
+
                           //Input Section
                           Padding(
-                            padding: const EdgeInsets.all(20.0),
+                            padding: const EdgeInsets.all(5.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
@@ -238,7 +357,7 @@ class _TrackerPageState extends State<TrackerPage>
                           //Dropdown Section
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 30, vertical: 20),
+                                horizontal: 5, vertical: 10),
                             child: Column(
                               children: [
                                 Row(
@@ -253,6 +372,8 @@ class _TrackerPageState extends State<TrackerPage>
                                         child: Obx(
                                           () => TextButton(
                                             onPressed: () {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
                                               showModalBottomSheet(
                                                 context: context,
                                                 builder:
@@ -370,7 +491,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                   controller
                                                           .modTrailSelectedValue
                                                           .value ??
-                                                      localization.trail_mode,
+                                                      localization.choose,
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Theme.of(context)
@@ -399,6 +520,8 @@ class _TrackerPageState extends State<TrackerPage>
                                         child: Obx(
                                           () => TextButton(
                                             onPressed: () {
+                                              FocusManager.instance.primaryFocus
+                                                  ?.unfocus();
                                               showModalBottomSheet(
                                                 context: context,
                                                 builder:
@@ -537,7 +660,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                   controller
                                                           .kaedahTrailSelectedValue
                                                           .value ??
-                                                      localization.method_trail,
+                                                      localization.choose,
                                                   style: TextStyle(
                                                     fontSize: 14,
                                                     color: Theme.of(context)
@@ -695,7 +818,7 @@ class _TrackerPageState extends State<TrackerPage>
                                                     controller
                                                             .getSelectedValue()
                                                             .value ??
-                                                        localization.interval,
+                                                        localization.choose,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       color: Theme.of(context)
@@ -737,10 +860,12 @@ class _TrackerPageState extends State<TrackerPage>
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, -2),
+                  blurRadius: 12,
+                  offset: const Offset(0, -4),
                 ),
               ],
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(20)),
             ),
             child: Column(
               children: [
@@ -825,8 +950,8 @@ class _TrackerPageState extends State<TrackerPage>
                           child: Center(
                             child: Obx(() => Text(
                                   controller.isTracking.value
-                                      ? localization.finish
-                                      : localization.start,
+                                      ? localization.finish.toUpperCase()
+                                      : localization.start.toUpperCase(),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.white,

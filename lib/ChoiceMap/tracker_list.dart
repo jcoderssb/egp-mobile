@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
+import 'package:egp/network/api_endpoints.dart';
 import 'package:egp/tracker/tracker_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,32 +24,101 @@ class _TrackerListState extends State<TrackerList> {
   Set<int> uploadedIndexes = {};
 
   void _showTrackerDetails(BuildContext context, TrackerData trackerObj) {
-    showDialog(
+    final localization = AppLocalizations.of(context)!;
+
+    showModalBottomSheet(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(trackerObj.name),
-        content: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Start Point: ${trackerObj.startPoint}"),
-              Text("End Point: ${trackerObj.endPoint}"),
-              Text("Interval: ${trackerObj.interval}"),
-              SizedBox(height: 20),
-              Text("Location Points:",
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              ...trackerObj.locationPoints.map(
-                  (point) => Text("- Lat: ${point.lat}, Lng: ${point.lon}")),
-            ],
-          ),
+      isScrollControlled:
+          true, // Allows the sheet to take up most of the screen
+      backgroundColor: Colors.transparent, // For rounded corners
+      builder: (context) => Container(
+        height:
+            MediaQuery.of(context).size.height * 0.8, // 80% of screen height
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text("Close"),
-          ),
-        ],
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 12),
+              width: 40,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            // Header with title and close button
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    trackerObj.name,
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            // Divider line
+            Divider(height: 1),
+            // Scrollable content
+            Expanded(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildDetailRow(localization.tracker_page_placeholder_2,
+                        trackerObj.startPoint),
+                    _buildDetailRow(localization.tracker_page_placeholder_3,
+                        trackerObj.endPoint),
+                    _buildDetailRow(
+                        localization.interval, '${trackerObj.interval}'),
+                    SizedBox(height: 20),
+                    Text("Location Points:",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    ...trackerObj.locationPoints.map(
+                      (point) => Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: Text("📍 Lat: ${point.lat}, Lng: ${point.lon}"),
+                      ),
+                    ),
+                    SizedBox(height: 20), // Extra space at bottom
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+// Helper widget for consistent detail rows
+  Widget _buildDetailRow(String label, String value) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 12),
+      child: RichText(
+        text: TextSpan(
+          style: TextStyle(color: Colors.black, fontSize: 14),
+          children: [
+            TextSpan(
+              text: "$label: ",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            TextSpan(text: value),
+          ],
+        ),
       ),
     );
   }
@@ -58,8 +128,13 @@ class _TrackerListState extends State<TrackerList> {
 
     await showModalBottomSheet(
       context: context,
+      backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -70,39 +145,56 @@ class _TrackerListState extends State<TrackerList> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 20),
-            Text(localization.confirm_delete),
-            SizedBox(height: 30),
+            SizedBox(height: 12),
+            Text(
+              localization.confirm_delete,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+              ),
+            ),
+            SizedBox(height: 24),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Expanded(
                   child: OutlinedButton(
                     onPressed: () => Navigator.pop(context),
                     style: OutlinedButton.styleFrom(
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    child: Text(localization.cancel),
+                    child: Text(
+                      localization.cancel,
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
-                SizedBox(width: 15),
+                SizedBox(width: 12),
                 Expanded(
-                  child: FilledButton(
+                  child: ElevatedButton(
                     onPressed: () async {
                       Navigator.pop(context);
                       await _deleteAllData();
                     },
-                    style: FilledButton.styleFrom(
+                    style: ElevatedButton.styleFrom(
                       backgroundColor: Theme.of(context).colorScheme.error,
-                      foregroundColor: Theme.of(context).colorScheme.onError,
-                      padding: EdgeInsets.symmetric(vertical: 15),
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    child: Text(localization.delete),
+                    child: Text(
+                      localization.delete,
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
               ],
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
           ],
         ),
       ),
@@ -186,6 +278,131 @@ class _TrackerListState extends State<TrackerList> {
                                 onPressed: isUploading
                                     ? null
                                     : () async {
+                                        // Show confirmation bottom sheet
+                                        bool confirmUpload =
+                                            await showModalBottomSheet<bool>(
+                                                  context: context,
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  isScrollControlled: true,
+                                                  builder: (context) =>
+                                                      Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      borderRadius:
+                                                          BorderRadius.vertical(
+                                                              top: Radius
+                                                                  .circular(
+                                                                      20)),
+                                                    ),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Text(
+                                                          localization.upload,
+                                                          style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 12),
+                                                        // Message
+                                                        Text(
+                                                          "${localization.confirm_upload} ${trackerObj.name}?",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 14,
+                                                            color: Colors
+                                                                .grey[600],
+                                                          ),
+                                                        ),
+                                                        SizedBox(height: 24),
+                                                        // Buttons row
+                                                        Row(
+                                                          children: [
+                                                            // Cancel button
+                                                            Expanded(
+                                                              child:
+                                                                  OutlinedButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                        context,
+                                                                        false),
+                                                                style: OutlinedButton
+                                                                    .styleFrom(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          vertical:
+                                                                              16),
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12),
+                                                                  ),
+                                                                ),
+                                                                child: Text(
+                                                                  localization
+                                                                      .cancel,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .black),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 12),
+                                                            // Upload button
+                                                            Expanded(
+                                                              child:
+                                                                  ElevatedButton(
+                                                                onPressed: () =>
+                                                                    Navigator.pop(
+                                                                        context,
+                                                                        true),
+                                                                style: ElevatedButton
+                                                                    .styleFrom(
+                                                                  padding: EdgeInsets
+                                                                      .symmetric(
+                                                                          vertical:
+                                                                              16),
+                                                                  backgroundColor:
+                                                                      Colors
+                                                                          .blue,
+                                                                  shape:
+                                                                      RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            12),
+                                                                  ),
+                                                                ),
+                                                                child: Text(
+                                                                  localization
+                                                                      .upload,
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .white),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        SizedBox(
+                                                            height:
+                                                                8), // Bottom padding
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ) ??
+                                                false; // Handle null case (when dismissed by swiping)
+
+                                        if (confirmUpload != true) return;
+
                                         setState(() {
                                           uploadingIndexes.add(position);
                                         });
@@ -194,14 +411,9 @@ class _TrackerListState extends State<TrackerList> {
                                             await uploadTrackerData(trackerObj);
 
                                         if (success) {
-                                          // Update the tracker object
                                           trackerObj.isUploaded = true;
-
-                                          // Save updated data back to Hive
                                           await dataBox.putAt(
                                               position, trackerObj.toJson());
-
-                                          // Update UI
                                           setState(() {
                                             uploadedIndexes.add(position);
                                           });
@@ -248,8 +460,15 @@ class _TrackerListState extends State<TrackerList> {
                               padding: const EdgeInsets.all(16),
                               child: Row(
                                 children: [
-                                  Icon(Icons.location_on,
-                                      color: Colors.blueAccent),
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.blueAccent,
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    child: Icon(Icons.location_on,
+                                        color: Colors.white),
+                                  ),
                                   const SizedBox(width: 12),
                                   Expanded(
                                     child: Column(
@@ -268,11 +487,30 @@ class _TrackerListState extends State<TrackerList> {
                                         InkWell(
                                           onTap: () => _showTrackerDetails(
                                               context, trackerObj),
-                                          child: Text(
-                                            'Lihat ->',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              color: Colors.blueAccent,
+                                          child: Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 4),
+                                            decoration: BoxDecoration(
+                                              color: Colors.blueAccent
+                                                  .withValues(alpha: 0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Text(
+                                                  'Lihat',
+                                                  style: TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.blueAccent,
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 4),
+                                                Icon(Icons.arrow_forward,
+                                                    size: 14,
+                                                    color: Colors.blueAccent),
+                                              ],
                                             ),
                                           ),
                                         ),
@@ -339,7 +577,7 @@ class _TrackerListState extends State<TrackerList> {
         "negeri_id": data.negeriId.toString()
       };
 
-      var url = Uri.parse("https://myegp.forestry.gov.my/api/rekod-trail");
+      var url = Uri.parse(ApiEndpoints.rekodTrail);
 
       var value = await http.post(url, headers: header, body: body);
 

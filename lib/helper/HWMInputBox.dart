@@ -1,4 +1,4 @@
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 import 'package:flutter/material.dart';
 
 class HWMInputBox extends StatelessWidget {
@@ -38,15 +38,11 @@ class HWMInputBox extends StatelessWidget {
                 borderSide: BorderSide(color: themeColor, width: 1.0)),
             filled: true,
             fillColor: whiteColor,
-
             errorText: fieldValid ? null : errorText,
-            hintStyle: const TextStyle(
-                color: blackColor,
-                fontSize: 18),
+            hintStyle: const TextStyle(color: blackColor, fontSize: 18),
             labelText: hint),
         controller: controller,
         style: const TextStyle(color: blackColor),
-
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 import 'package:egp/login/login_page.dart';
 import 'package:egp/locale/locale_controller.dart';
 import 'package:egp/tracker/tracker_controller.dart';
@@ -24,19 +24,17 @@ class EGPHome extends StatelessWidget {
   Widget build(BuildContext context) {
     final localeController = Get.find<LocaleController>();
 
-    return Obx(
-      () => GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'e-GP',
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        locale: localeController.currentLocale.value, // Dynamic locale
-        theme: ThemeData.light().copyWith(
-          scaffoldBackgroundColor: themeColor,
-          canvasColor: whiteColor,
-        ),
-        home: const LoginPage(),
+    return GetMaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'e-GP',
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      locale: localeController.currentLocale.value, // Dynamic locale
+      theme: ThemeData.light().copyWith(
+        scaffoldBackgroundColor: themeColor,
+        canvasColor: whiteColor,
       ),
+      home: const LoginPage(),
     );
   }
 }

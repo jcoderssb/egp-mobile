@@ -1,4 +1,4 @@
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 import 'package:egp/tracker/tracker_data.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
@@ -33,9 +33,21 @@ class TrackerController extends GetxController {
   var endValid = true.obs;
   var isTracking = false.obs;
   var userLocations = <LocationPoints>[].obs;
+  RxBool isAddingPoint = false.obs;
+  RxString currentOperation = ''.obs;
 
   // ignore: prefer_typing_uninitialized_variables
   late Box dataBox;
+
+  void startAddingPoint() {
+    isAddingPoint.value = true;
+    currentOperation.value = 'Adding point...';
+  }
+
+  void finishAddingPoint() {
+    isAddingPoint.value = false;
+    currentOperation.value = '';
+  }
 
   @override
   void onReady() {
@@ -68,6 +80,7 @@ class TrackerController extends GetxController {
     nameValid.value = true;
     startValid.value = true;
     endValid.value = true;
+    isTracking.value = false;
   }
 
   openHive() async {
@@ -85,16 +98,12 @@ class TrackerController extends GetxController {
   }
 
   int getIntervalAmount() {
-    if (modTrailSelectedValue.value == "Manual") {
-      return 30;
-    }
-
     if (kaedahTrailSelectedValue.value == "Kenderaan") {
-      if (intervalSelectedValueS.value == null) return 0;
+      if (intervalSelectedValueS.value == null) return 30;
       return intervalValuesKenderaan[
           intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
     } else {
-      if (intervalSelectedValueM.value == null) return 0;
+      if (intervalSelectedValueM.value == null) return 300;
       return intervalValuesBerjalan[
               intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)] *
           60;

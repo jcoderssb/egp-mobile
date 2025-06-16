@@ -1,13 +1,13 @@
 import 'dart:convert';
-import 'package:egp/Constants.dart';
+import 'package:egp/constants.dart';
 import 'package:egp/global.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-
 import '../ChoiceMap/choice_page.dart';
 import 'login_page.dart';
+import 'package:egp/network/api_endpoints.dart';
 
 class LoginController extends GetxController {
   var progressVisible = false.obs;
@@ -17,9 +17,6 @@ class LoginController extends GetxController {
 
   // ignore: prefer_typing_uninitialized_variables
   var authBox;
-
-  //admin@egp.com.my
-  var loginUrl = "https://myegp.forestry.gov.my/api/create-token";
 
   _initialScreen(isLoggedIn) {
     if (!isLoggedIn) {
@@ -80,7 +77,7 @@ class LoginController extends GetxController {
 
     LoginController controller = Get.find();
     try {
-      var url = Uri.parse(loginUrl);
+      var url = Uri.parse(ApiEndpoints.login);
 
       var response =
           await http.post(url, body: {'ic': ic, 'password': password});
@@ -90,8 +87,8 @@ class LoginController extends GetxController {
         if (jsonObject["status"] == "success") {
           String token = jsonObject["access_token"];
 
-          await http.get(Uri.parse(
-              'https://myegp.forestry.gov.my/login-by-token?token=$token'));
+          await http.get(
+              Uri.parse('${ApiEndpoints.baseUrl}/login-by-token?token=$token'));
 
           // print("Token sini " + token);
           String expiry = jsonObject["expires_at"];
