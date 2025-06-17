@@ -88,32 +88,89 @@ class _ChoicePageState extends State<ChoicePage> {
 
   void _confirmLogout() {
     final localization = AppLocalizations.of(context)!;
-    Get.defaultDialog(
-      title: localization.logout,
-      middleText: localization.logoutConfirm,
-      confirm: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor:
-              const Color.fromARGB(255, 40, 167, 69), // Confirm button color
+    Get.dialog(
+      AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.0),
         ),
-        onPressed: _logout,
-        child: Text(localization.yes),
-      ),
-      cancel: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          foregroundColor: Colors.white,
-          backgroundColor:
-              const Color.fromARGB(255, 220, 53, 69), // Cancel button color
+        title: Row(
+          children: [
+            Icon(Icons.logout, color: Colors.red[400], size: 28),
+            const SizedBox(width: 12),
+            Text(
+              localization.logout,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey[800],
+              ),
+            ),
+          ],
         ),
-        onPressed: () => Get.back(),
-        child: Text(localization.cancel),
+        content: Text(
+          localization.logoutConfirm,
+          style: TextStyle(
+            fontSize: 16,
+            color: Colors.grey[600],
+          ),
+        ),
+        actions: [
+          Row(
+            children: [
+              Expanded(
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.grey[700],
+                    side: BorderSide(color: Colors.red),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: () => Get.back(),
+                  child: Text(
+                    localization.cancel,
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  onPressed: _logout,
+                  child: Text(localization.yes),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
+      barrierDismissible: true,
     );
   }
 
   void _logout() async {
-    Get.snackbar("Log Keluar", "Anda telah berjaya log keluar");
+    final localization = AppLocalizations.of(context)!;
+
+    Get.snackbar(
+      localization.logout,
+      localization.successLogout,
+      backgroundColor: Color.fromARGB(200, 76, 175, 79),
+      colorText: Colors.white,
+      icon: Icon(Icons.check_circle, color: Colors.white),
+      borderRadius: 10,
+      margin: EdgeInsets.all(10),
+      duration: Duration(seconds: 2),
+    );
 
     Get.offAll(() => const LoginPage());
   }
@@ -236,7 +293,7 @@ class _ChoicePageState extends State<ChoicePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Hi ' + loginName + '! 👋',
+                    'Hi  $loginName ! 👋',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

@@ -22,7 +22,7 @@ class _TrackerPageState extends State<TrackerPage>
   late bool _serviceEnabled;
   late PermissionStatus _permissionGranted;
   late LocationData _locationData;
-  late Timer? mytimer;
+  Timer? mytimer;
 
   @override
   void initState() {
@@ -109,8 +109,11 @@ class _TrackerPageState extends State<TrackerPage>
       Get.snackbar(
         'Point Added',
         'Location recorded (${controller.userLocations.length} total)',
-        backgroundColor: Colors.green[400],
+        backgroundColor: Color.fromARGB(200, 76, 175, 79),
         colorText: Colors.white,
+        icon: Icon(Icons.add_location_alt, color: Colors.white),
+        borderRadius: 10,
+        margin: EdgeInsets.all(10),
         duration: Duration(seconds: 2),
       );
     } catch (e) {
@@ -976,7 +979,13 @@ class _TrackerPageState extends State<TrackerPage>
                                     Get.snackbar(
                                       localization.attention,
                                       localization.track_first,
-                                      backgroundColor: Colors.orange[400],
+                                      backgroundColor: const Color.fromARGB(
+                                          200, 255, 168, 38),
+                                      icon: const Icon(
+                                          Icons.warning_amber_rounded,
+                                          color: Colors.white),
+                                      borderRadius: 10,
+                                      margin: const EdgeInsets.all(10),
                                       colorText: Colors.white,
                                     );
                                   },

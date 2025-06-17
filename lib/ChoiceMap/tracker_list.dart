@@ -211,7 +211,7 @@ class _TrackerListState extends State<TrackerList> {
     Get.snackbar(
       localization.success,
       localization.success_delete,
-      backgroundColor: const Color.fromARGB(166, 76, 175, 79),
+      backgroundColor: Color.fromARGB(200, 76, 175, 79),
       colorText: Colors.white,
       icon: Icon(Icons.check_circle, color: Colors.white),
       borderRadius: 10,
@@ -294,9 +294,9 @@ class _TrackerListState extends State<TrackerList> {
                                                       color: Colors.white,
                                                       borderRadius:
                                                           BorderRadius.vertical(
-                                                              top: Radius
-                                                                  .circular(
-                                                                      20)),
+                                                        top:
+                                                            Radius.circular(20),
+                                                      ),
                                                     ),
                                                     child: Column(
                                                       mainAxisSize:
@@ -312,14 +312,30 @@ class _TrackerListState extends State<TrackerList> {
                                                         ),
                                                         SizedBox(height: 12),
                                                         // Message
-                                                        Text(
-                                                          "${localization.confirm_upload} ${trackerObj.name}?",
-                                                          textAlign:
-                                                              TextAlign.center,
-                                                          style: TextStyle(
-                                                            fontSize: 14,
-                                                            color: Colors
-                                                                .grey[600],
+                                                        Text.rich(
+                                                          TextSpan(
+                                                            style: TextStyle(
+                                                              fontSize: 14,
+                                                              color: Colors
+                                                                  .grey[600],
+                                                            ),
+                                                            children: [
+                                                              TextSpan(
+                                                                  text:
+                                                                      "${localization.confirm_upload} "),
+                                                              TextSpan(
+                                                                text: trackerObj
+                                                                    .name,
+                                                                style: TextStyle(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold,
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                              TextSpan(
+                                                                  text: "?"),
+                                                            ],
                                                           ),
                                                         ),
                                                         SizedBox(height: 24),
@@ -557,6 +573,8 @@ class _TrackerListState extends State<TrackerList> {
   }
 
   Future<bool> uploadTrackerData(TrackerData data) async {
+    final localization = AppLocalizations.of(context)!;
+
     try {
       var token = authBox.get(TOKEN_KEY);
 
@@ -582,25 +600,31 @@ class _TrackerListState extends State<TrackerList> {
       var value = await http.post(url, headers: header, body: body);
 
       var resJson = jsonDecode(value.body);
-      var status = resJson["status"];
-      var message = resJson["message"];
+      var status = resJson["status"].toString().toLowerCase();
+      var message = resJson["message"].toString();
 
       Get.snackbar(
-        status.toString(),
-        message.toString(),
-        icon: Icon(Icons.check_circle, color: Colors.white),
+        status == "success" ? localization.success : localization.error,
+        message,
+        backgroundColor: status == "success"
+            ? const Color.fromARGB(200, 76, 175, 79)
+            : Color.fromARGB(200, 244, 67, 54),
+        colorText: Colors.white,
+        icon: Icon(
+            status == "success" ? Icons.check_circle : Icons.error_outline,
+            color: Colors.white),
         borderRadius: 10,
         margin: EdgeInsets.all(10),
         duration: Duration(seconds: 2),
       );
 
-      return status.toString().toLowerCase() == "success";
+      return status == "success";
     } catch (e) {
       Get.snackbar(
         "Upload Failed",
         e.toString(),
         icon: Icon(Icons.error, color: Colors.white),
-        backgroundColor: Colors.red,
+        backgroundColor: const Color.fromARGB(200, 244, 67, 54),
         colorText: Colors.white,
         borderRadius: 10,
         margin: EdgeInsets.all(10),
