@@ -9,6 +9,7 @@ class TrackerData {
   late int intervalTypeId;
   late bool isUploaded;
   late List<LocationPoints> locationPoints;
+  late DateTime trackingEndTime;
 
   TrackerData({
     required this.name,
@@ -20,6 +21,7 @@ class TrackerData {
     required this.interval,
     required this.intervalTypeId,
     required this.locationPoints,
+    required this.trackingEndTime,
     this.isUploaded = false,
   });
 
@@ -33,6 +35,7 @@ class TrackerData {
     interval = json['interval'];
     intervalTypeId = json['interval_type_id'];
     isUploaded = json["isUploaded"] ?? false;
+    trackingEndTime = DateTime.parse(json['trackingEndTime']);
     if (json['location_points'] != null) {
       locationPoints = <LocationPoints>[];
       json['location_points'].forEach((v) {
@@ -53,6 +56,7 @@ class TrackerData {
     data['interval_type_id'] = intervalTypeId;
     data['isUploaded'] = isUploaded;
     data['location_points'] = locationPoints.map((v) => v.toJson()).toList();
+    data['trackingEndTime'] = trackingEndTime.toIso8601String();
     return data;
   }
 }

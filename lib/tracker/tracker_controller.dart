@@ -204,6 +204,7 @@ class TrackerController extends GetxController {
       interval: interval,
       intervalTypeId: intervalTypeId,
       locationPoints: userLocations,
+      trackingEndTime: DateTime.now(),
     );
 
     dataBox.put(

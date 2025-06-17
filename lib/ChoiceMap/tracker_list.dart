@@ -8,6 +8,7 @@ import 'package:hive/hive.dart';
 import 'package:egp/general_layout.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 class TrackerList extends StatefulWidget {
   const TrackerList({super.key});
@@ -23,14 +24,48 @@ class _TrackerListState extends State<TrackerList> {
   Set<int> uploadingIndexes = {};
   Set<int> uploadedIndexes = {};
 
+  TextEditingController searchController = TextEditingController();
+  String searchQuery = '';
+
+  List<dynamic> get filteredTrackers {
+    if (searchQuery.isEmpty) {
+      return dataBox.values.toList();
+    }
+    return dataBox.values.where((trackerJson) {
+      final trackerData = jsonDecode(jsonEncode(trackerJson));
+      final trackerObj = TrackerData.fromJson(trackerData);
+      return trackerObj.name
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()) ||
+          trackerObj.startPoint
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()) ||
+          trackerObj.endPoint
+              .toLowerCase()
+              .contains(searchQuery.toLowerCase()) ||
+          DateFormat('yyyy-MM-dd')
+              .format(trackerObj.trackingEndTime)
+              .contains(searchQuery) ||
+          DateFormat('hh:mma')
+              .format(trackerObj.trackingEndTime)
+              .contains(searchQuery);
+    }).toList();
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  // Preview detail item
   void _showTrackerDetails(BuildContext context, TrackerData trackerObj) {
     final localization = AppLocalizations.of(context)!;
 
     showModalBottomSheet(
       context: context,
-      isScrollControlled:
-          true, // Allows the sheet to take up most of the screen
-      backgroundColor: Colors.transparent, // For rounded corners
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) => Container(
         height:
             MediaQuery.of(context).size.height * 0.8, // 80% of screen height
@@ -85,7 +120,8 @@ class _TrackerListState extends State<TrackerList> {
                     _buildDetailRow(
                         localization.interval, '${trackerObj.interval}'),
                     SizedBox(height: 20),
-                    Text("Location Points:",
+                    Text(
+                        "Location Points: ${trackerObj.locationPoints.length} points",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     ...trackerObj.locationPoints.map(
                       (point) => Padding(
@@ -123,6 +159,7 @@ class _TrackerListState extends State<TrackerList> {
     );
   }
 
+  // Delete all item
   Future<void> _showDeleteConfirmation() async {
     final localization = AppLocalizations.of(context)!;
 
@@ -201,12 +238,116 @@ class _TrackerListState extends State<TrackerList> {
     );
   }
 
-  // Function to handle data deletion
   Future<void> _deleteAllData() async {
     final localization = AppLocalizations.of(context)!;
     await dataBox.clear();
     setState(() {
       uploadedIndexes.clear();
+    });
+    Get.snackbar(
+      localization.success,
+      localization.success_delete,
+      backgroundColor: Color.fromARGB(200, 76, 175, 79),
+      colorText: Colors.white,
+      icon: Icon(Icons.check_circle, color: Colors.white),
+      borderRadius: 10,
+      margin: EdgeInsets.all(10),
+      duration: Duration(seconds: 2),
+    );
+  }
+
+// Delete single item
+  Future<void> _showDeleteConfirmationForItem(
+      int index, TrackerData trackerObj) async {
+    final localization = AppLocalizations.of(context)!;
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) => Container(
+        padding: EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              localization.delete,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 12),
+            Text.rich(
+              TextSpan(
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                children: [
+                  TextSpan(text: "${localization.confirm_delete_item} "),
+                  TextSpan(
+                    text: trackerObj.name,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  ),
+                  TextSpan(text: "?"),
+                ],
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: OutlinedButton.styleFrom(
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      localization.cancel,
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ),
+                SizedBox(width: 12),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      Navigator.pop(context);
+                      await _deleteSingleData(index);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Text(
+                      localization.delete,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _deleteSingleData(int index) async {
+    final localization = AppLocalizations.of(context)!;
+    await dataBox.deleteAt(index);
+    setState(() {
+      // Remove from uploaded indexes if it was there
+      uploadedIndexes.remove(index);
     });
     Get.snackbar(
       localization.success,
@@ -229,234 +370,285 @@ class _TrackerListState extends State<TrackerList> {
       body: SafeArea(
         child: Column(
           children: [
+            //Search bar
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: TextField(
+                controller: searchController,
+                decoration: InputDecoration(
+                  hintText: localization.search,
+                  prefixIcon: Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  suffixIcon: searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            setState(() {
+                              searchController.clear();
+                              searchQuery = '';
+                            });
+                          },
+                        )
+                      : null,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
+                },
+              ),
+            ),
+
+            //List Item
             Expanded(
               child: Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: dataBox.isEmpty
+                child: filteredTrackers.isEmpty
                     ? Center(
                         child: Text(
-                          "Tiada data",
+                          searchQuery.isEmpty
+                              ? localization.noData
+                              : localization.noResult,
                           style: TextStyle(fontSize: 18, color: Colors.grey),
                         ),
                       )
                     : RefreshIndicator(
                         onRefresh: () async {
-                          setState(
-                              () {}); // You can re-fetch or reload Hive box if needed
+                          setState(() {});
                         },
                         child: ListView.separated(
-                          itemCount: dataBox.length,
+                          itemCount: filteredTrackers.length,
                           itemBuilder: (context, position) {
                             var trackerDataJson =
-                                jsonEncode(dataBox.getAt(position));
+                                jsonEncode(filteredTrackers[position]);
                             var trackerObj = TrackerData.fromJson(
                                 jsonDecode(trackerDataJson));
 
+                            var date = DateFormat('yyyy-MM-dd')
+                                .format(trackerObj.trackingEndTime);
+                            var time = DateFormat('hh:mm a')
+                                .format(trackerObj.trackingEndTime);
+
+                            int originalIndex = dataBox.values
+                                .toList()
+                                .indexOf(filteredTrackers[position]);
                             bool isUploading =
-                                uploadingIndexes.contains(position);
+                                uploadingIndexes.contains(originalIndex);
                             bool isUploaded = trackerObj.isUploaded;
 
                             Widget trailingButton;
 
                             if (isUploaded) {
-                              trailingButton = Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.check_circle, color: Colors.green),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    "Uploaded",
-                                    style: TextStyle(
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.w600),
-                                  ),
-                                ],
+                              trailingButton = Container(
+                                height: 36,
+                                width: 36,
+                                padding: EdgeInsets.all(6),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(color: Colors.green),
+                                ),
+                                child: Icon(Icons.check_circle,
+                                    size: 20, color: Colors.green),
                               );
                             } else {
-                              trailingButton = OutlinedButton.icon(
-                                onPressed: isUploading
-                                    ? null
-                                    : () async {
-                                        // Show confirmation bottom sheet
-                                        bool confirmUpload =
-                                            await showModalBottomSheet<bool>(
-                                                  context: context,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  isScrollControlled: true,
-                                                  builder: (context) =>
-                                                      Container(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            20),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.vertical(
-                                                        top:
-                                                            Radius.circular(20),
+                              trailingButton = SizedBox(
+                                height: 36,
+                                width: 36,
+                                child: OutlinedButton(
+                                  onPressed: isUploading
+                                      ? null
+                                      : () async {
+                                          // Show confirmation bottom sheet
+                                          bool confirmUpload =
+                                              await showModalBottomSheet<bool>(
+                                                    context: context,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    isScrollControlled: true,
+                                                    builder: (context) =>
+                                                        Container(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              20),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .vertical(
+                                                          top: Radius.circular(
+                                                              20),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        Text(
-                                                          localization.upload,
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                        ),
-                                                        SizedBox(height: 12),
-                                                        // Message
-                                                        Text.rich(
-                                                          TextSpan(
+                                                      child: Column(
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
+                                                        children: [
+                                                          Text(
+                                                            localization.upload,
                                                             style: TextStyle(
-                                                              fontSize: 14,
-                                                              color: Colors
-                                                                  .grey[600],
+                                                              fontSize: 20,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                             ),
-                                                            children: [
-                                                              TextSpan(
-                                                                  text:
-                                                                      "${localization.confirm_upload} "),
-                                                              TextSpan(
-                                                                text: trackerObj
-                                                                    .name,
-                                                                style: TextStyle(
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .bold,
-                                                                    color: Colors
-                                                                        .black),
-                                                              ),
-                                                              TextSpan(
-                                                                  text: "?"),
-                                                            ],
                                                           ),
-                                                        ),
-                                                        SizedBox(height: 24),
-                                                        // Buttons row
-                                                        Row(
-                                                          children: [
-                                                            // Cancel button
-                                                            Expanded(
-                                                              child:
-                                                                  OutlinedButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        false),
-                                                                style: OutlinedButton
-                                                                    .styleFrom(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              16),
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            12),
-                                                                  ),
-                                                                ),
-                                                                child: Text(
-                                                                  localization
-                                                                      .cancel,
+                                                          SizedBox(height: 12),
+                                                          // Message
+                                                          Text.rich(
+                                                            TextSpan(
+                                                              style: TextStyle(
+                                                                fontSize: 14,
+                                                                color: Colors
+                                                                    .grey[600],
+                                                              ),
+                                                              children: [
+                                                                TextSpan(
+                                                                    text:
+                                                                        "${localization.confirm_upload} "),
+                                                                TextSpan(
+                                                                  text:
+                                                                      trackerObj
+                                                                          .name,
                                                                   style: TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
                                                                       color: Colors
                                                                           .black),
                                                                 ),
-                                                              ),
+                                                                TextSpan(
+                                                                    text: "?"),
+                                                              ],
                                                             ),
-                                                            SizedBox(width: 12),
-                                                            // Upload button
-                                                            Expanded(
-                                                              child:
-                                                                  ElevatedButton(
-                                                                onPressed: () =>
-                                                                    Navigator.pop(
-                                                                        context,
-                                                                        true),
-                                                                style: ElevatedButton
-                                                                    .styleFrom(
-                                                                  padding: EdgeInsets
-                                                                      .symmetric(
-                                                                          vertical:
-                                                                              16),
-                                                                  backgroundColor:
-                                                                      Colors
-                                                                          .blue,
-                                                                  shape:
-                                                                      RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            12),
+                                                          ),
+                                                          SizedBox(height: 24),
+                                                          // Buttons row
+                                                          Row(
+                                                            children: [
+                                                              // Cancel button
+                                                              Expanded(
+                                                                child:
+                                                                    OutlinedButton(
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          context,
+                                                                          false),
+                                                                  style: OutlinedButton
+                                                                      .styleFrom(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            16),
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              12),
+                                                                    ),
+                                                                  ),
+                                                                  child: Text(
+                                                                    localization
+                                                                        .cancel,
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .black),
                                                                   ),
                                                                 ),
-                                                                child: Text(
-                                                                  localization
-                                                                      .upload,
-                                                                  style: TextStyle(
-                                                                      color: Colors
-                                                                          .white),
+                                                              ),
+                                                              SizedBox(
+                                                                  width: 12),
+                                                              // Upload button
+                                                              Expanded(
+                                                                child:
+                                                                    ElevatedButton(
+                                                                  onPressed: () =>
+                                                                      Navigator.pop(
+                                                                          context,
+                                                                          true),
+                                                                  style: ElevatedButton
+                                                                      .styleFrom(
+                                                                    padding: EdgeInsets.symmetric(
+                                                                        vertical:
+                                                                            16),
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .blue,
+                                                                    shape:
+                                                                        RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              12),
+                                                                    ),
+                                                                  ),
+                                                                  child: Text(
+                                                                    localization
+                                                                        .upload,
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ),
                                                                 ),
                                                               ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        SizedBox(
-                                                            height:
-                                                                8), // Bottom padding
-                                                      ],
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 8),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  ),
-                                                ) ??
-                                                false; // Handle null case (when dismissed by swiping)
+                                                  ) ??
+                                                  false;
 
-                                        if (confirmUpload != true) return;
+                                          if (confirmUpload != true) return;
 
-                                        setState(() {
-                                          uploadingIndexes.add(position);
-                                        });
-
-                                        bool success =
-                                            await uploadTrackerData(trackerObj);
-
-                                        if (success) {
-                                          trackerObj.isUploaded = true;
-                                          await dataBox.putAt(
-                                              position, trackerObj.toJson());
                                           setState(() {
-                                            uploadedIndexes.add(position);
+                                            uploadingIndexes.add(position);
                                           });
-                                        }
 
-                                        setState(() {
-                                          uploadingIndexes.remove(position);
-                                        });
-                                      },
-                                icon: isUploading
-                                    ? SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
+                                          bool success =
+                                              await uploadTrackerData(
+                                                  trackerObj);
+
+                                          if (success) {
+                                            trackerObj.isUploaded = true;
+                                            await dataBox.putAt(
+                                                position, trackerObj.toJson());
+                                            setState(() {
+                                              uploadedIndexes.add(position);
+                                            });
+                                          }
+
+                                          setState(() {
+                                            uploadingIndexes.remove(position);
+                                          });
+                                        },
+                                  style: OutlinedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    padding: EdgeInsets.zero,
+                                    side: BorderSide(color: Colors.blue),
+                                  ),
+                                  child: isUploading
+                                      ? SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.blue,
+                                          ),
+                                        )
+                                      : Icon(
+                                          Icons.cloud_upload,
+                                          size: 20,
                                           color: Colors.blue,
                                         ),
-                                      )
-                                    : Icon(Icons.upload, size: 18),
-                                label: Text(
-                                    isUploading ? "Uploading..." : "Upload"),
-                                style: OutlinedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  foregroundColor: Colors.blue,
-                                  side: BorderSide(color: Colors.blue),
                                 ),
                               );
                             }
@@ -476,16 +668,20 @@ class _TrackerListState extends State<TrackerList> {
                               padding: const EdgeInsets.all(16),
                               child: Row(
                                 children: [
+                                  //Location Icon
                                   Container(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(10),
                                     decoration: BoxDecoration(
-                                      color: Colors.blueAccent,
+                                      color: Colors.blueAccent
+                                          .withValues(alpha: 0.2),
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     child: Icon(Icons.location_on,
-                                        color: Colors.white),
+                                        color: Colors.blueAccent),
                                   ),
-                                  const SizedBox(width: 12),
+                                  const SizedBox(width: 16),
+
+                                  // Text content
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment:
@@ -494,47 +690,109 @@ class _TrackerListState extends State<TrackerList> {
                                         Text(
                                           trackerObj.name,
                                           style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: 16,
                                             fontWeight: FontWeight.w600,
                                             color: Colors.black87,
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        InkWell(
-                                          onTap: () => _showTrackerDetails(
-                                              context, trackerObj),
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8, vertical: 4),
-                                            decoration: BoxDecoration(
-                                              color: Colors.blueAccent
-                                                  .withValues(alpha: 0.1),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                            ),
-                                            child: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Text(
-                                                  'Lihat',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Colors.blueAccent,
-                                                  ),
+                                        Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text: '${localization.date} : ',
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey[600],
+                                                  fontWeight: FontWeight.w500,
                                                 ),
-                                                const SizedBox(width: 4),
-                                                Icon(Icons.arrow_forward,
-                                                    size: 14,
-                                                    color: Colors.blueAccent),
-                                              ],
-                                            ),
+                                              ),
+                                              TextSpan(
+                                                text: date,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey[800],
+                                                ),
+                                              ),
+                                              TextSpan(text: "\n"), // New line
+                                              TextSpan(
+                                                text: '${localization.time} : ',
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey[600],
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: time,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  color: Colors.grey[800],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
+                                        )
                                       ],
                                     ),
                                   ),
-                                  const SizedBox(width: 8),
-                                  trailingButton,
+
+                                  // Action buttons
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      // Upload button
+                                      trailingButton,
+                                      const SizedBox(width: 8),
+
+                                      // View button
+                                      SizedBox(
+                                        height: 36,
+                                        width: 36,
+                                        child: OutlinedButton(
+                                          onPressed: () => _showTrackerDetails(
+                                              context, trackerObj),
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: EdgeInsets.all(8),
+                                            side: BorderSide(
+                                                color: Colors.yellow.shade700),
+                                          ),
+                                          child: Icon(Icons.visibility,
+                                              size: 20,
+                                              color: Colors.yellow.shade700),
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 8),
+
+                                      // Delete button
+                                      SizedBox(
+                                        height: 36,
+                                        width: 36,
+                                        child: OutlinedButton(
+                                          onPressed: () =>
+                                              _showDeleteConfirmationForItem(
+                                                  originalIndex, trackerObj),
+                                          style: OutlinedButton.styleFrom(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                            padding: EdgeInsets.all(8),
+                                            side: BorderSide(
+                                                color: Colors.red.shade700),
+                                          ),
+                                          child: Icon(Icons.delete,
+                                              size: 20,
+                                              color: Colors.red.shade700),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             );
@@ -552,7 +810,7 @@ class _TrackerListState extends State<TrackerList> {
                 child: FilledButton.icon(
                   onPressed: _showDeleteConfirmation,
                   icon: Icon(Icons.delete_forever),
-                  label: Text("Clear Database"),
+                  label: Text(localization.deleteAll),
                   style: FilledButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.error,
                     foregroundColor: Theme.of(context).colorScheme.onError,
@@ -605,7 +863,9 @@ class _TrackerListState extends State<TrackerList> {
 
       Get.snackbar(
         status == "success" ? localization.success : localization.error,
-        message,
+        status == "success"
+            ? '${data.name} ${localization.success_upload}'
+            : message,
         backgroundColor: status == "success"
             ? const Color.fromARGB(200, 76, 175, 79)
             : Color.fromARGB(200, 244, 67, 54),

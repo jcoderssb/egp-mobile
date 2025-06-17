@@ -144,7 +144,7 @@ class _TrackerPageState extends State<TrackerPage>
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '${localization.finish}  ${localization.trail}',
+                '${localization.finish} ${localization.trail}',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
