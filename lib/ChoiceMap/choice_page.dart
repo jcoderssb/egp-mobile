@@ -13,7 +13,6 @@ import 'package:egp/login/login_page.dart';
 
 class ChoicePage extends StatefulWidget {
   const ChoicePage({super.key});
-
   @override
   State<ChoicePage> createState() => _ChoicePageState();
 }
@@ -49,40 +48,42 @@ class _ChoicePageState extends State<ChoicePage> {
     required String label,
     required VoidCallback onPressed,
   }) {
-    return InkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [themeColor, Color.fromARGB(255, 13, 138, 125)],
-          ),
+    return Column(
+      children: [
+        InkWell(
+          onTap: onPressed,
           borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 40, color: Colors.white),
-            const SizedBox(height: 12),
-            Flexible(
-              child: AutoSizeText(
-                label,
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                ),
+          child: Container(
+            width: double.infinity,
+            height: 100,
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [themeColor, Color.fromARGB(255, 13, 138, 125)],
               ),
-            )
-          ],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, size: 45, color: Colors.white),
+          ),
         ),
-      ),
+        const SizedBox(height: 8),
+        SizedBox(
+          width: double.infinity,
+          child: AutoSizeText(
+            label,
+            textAlign: TextAlign.center,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(
+              color: themeColor,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -179,7 +180,6 @@ class _ChoicePageState extends State<ChoicePage> {
   Widget build(BuildContext context) {
     final localeController = Get.find<LocaleController>();
     final localization = AppLocalizations.of(context)!;
-
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -220,7 +220,7 @@ class _ChoicePageState extends State<ChoicePage> {
                   // backgroundImage: NetworkImage('https://example.com/avatar.jpg'),
                   ),
               decoration: BoxDecoration(
-                color: themeColor, // your app theme color
+                color: themeColor,
               ),
             ),
             Expanded(
@@ -300,13 +300,6 @@ class _ChoicePageState extends State<ChoicePage> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Text(
-                  //   'Role: Pentadbir',
-                  //   style: TextStyle(
-                  //     fontSize: 14,
-                  //     color: Colors.white70,
-                  //   ),
-                  // ),
                   SizedBox(height: 30),
                   Text(
                     localization.greeting,
@@ -321,8 +314,6 @@ class _ChoicePageState extends State<ChoicePage> {
               ),
             ),
           ),
-
-          // Bottom section
           Expanded(
             flex: 3,
             child: Container(
@@ -347,6 +338,7 @@ class _ChoicePageState extends State<ChoicePage> {
                       mainAxisSpacing: 16,
                       crossAxisSpacing: 16,
                       shrinkWrap: true,
+                      childAspectRatio: 0.8,
                       children: [
                         _buildGridButton(
                           icon: Icons.map,

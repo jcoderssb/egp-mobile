@@ -120,7 +120,6 @@ class LoginController extends GetxController {
       controller.hideProgress();
       Get.snackbar("About Login", "Login message",
           backgroundColor: Colors.redAccent,
-          snackPosition: SnackPosition.BOTTOM,
           titleText: const Text(
             "Login failed",
             style: TextStyle(color: Colors.white),
