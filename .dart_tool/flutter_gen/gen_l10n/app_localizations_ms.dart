@@ -49,7 +49,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get choose_trail_mode => 'Pilih Mod Jejak';
 
   @override
-  String get choose_method_mode => 'Pilih Kaedah Jejak';
+  String get choose_method_trail => 'Pilih Kaedah Jejak';
 
   @override
   String get choose_interval => 'Pilih Selang Masa';
@@ -65,8 +65,9 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get about_2 =>
-      'Aplikasi mudah alih eGP versi terkini yang dibangunkan oleh JPSM bertujuan untuk menyokong pengurusan aktiviti perhutanan secara digital, khususnya melalui fungsi mod Trail yang membolehkan pengguna menjejak dan merekod laluan kerja lapangan di kawasan hutan secara masa nyata. Aplikasi ini direka bentuk dengan ciri mesra pengguna dan boleh digunakan tanpa sambungan internet berterusan, membolehkan pegawai JPSM menjalankan tugasan di lokasi terpencil dengan lebih efisien.\n\n'
-      'Semua data yang dikumpul melalui aplikasi akan diselaraskan dengan sistem utama eGP bagi menjamin ketepatan dan keselamatan maklumat. Versi terkini ini turut menawarkan ciri tambahan seperti rakaman gambar lokasi, pengurusan aduan dan penilaian kawasan yang lebih terperinci.';
+      'Aplikasi mudah alih eGP versi terkini yang dibangunkan oleh JPSM bertujuan untuk menyokong pengurusan aktiviti perhutanan secara digital, khususnya melalui fungsi mod Trail yang membolehkan pengguna menjejak dan merekod laluan kerja lapangan di kawasan hutan secara masa nyata.\n\n'
+      'Aplikasi ini direka bentuk dengan ciri mesra pengguna dan boleh digunakan tanpa sambungan internet berterusan, membolehkan pegawai JPSM menjalankan tugasan di lokasi terpencil dengan lebih efisien. Semua data yang dikumpul melalui aplikasi akan diselaraskan dengan sistem utama eGP bagi menjamin ketepatan dan keselamatan maklumat.\n\n'
+      'Maklumat yang dipaparkan dalam aplikasi ini adalah terhad kepada pengguna yang diberi kebenaran sahaja bagi memastikan kawalan akses dan kerahsiaan data.';
 
   @override
   String get logout => 'Log Keluar';

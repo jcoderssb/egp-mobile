@@ -49,7 +49,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get choose_trail_mode => 'Choose Trail Mode';
 
   @override
-  String get choose_method_mode => 'Choose Method Mode';
+  String get choose_method_trail => 'Choose Method Mode';
 
   @override
   String get choose_interval => 'Choose Interval';
@@ -65,8 +65,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get about_2 =>
-      'The latest version of the eGP mobile application, developed by JPSM, is designed to support digital management of forestry activities, especially through the Trail mode feature which enables users to track and record fieldwork routes in forest areas in real time. The app is built with user-friendly features and can be used without continuous internet connectivity, allowing JPSM officers to carry out tasks efficiently in remote locations.\n\n'
-      'All data collected through the app is synchronized with the main eGP system to ensure data accuracy and security. This latest version also includes enhanced features such as location photo capture, complaint management, and more detailed site assessments.';
+      'The latest version of the eGP mobile application, developed by JPSM, is designed to support digital management of forestry activities, especially through the Trail Mode feature which enables users to track and record fieldwork routes in forest areas in real time.\n\n'
+      'The app is built with user-friendly features and can be used without continuous internet connectivity, allowing JPSM officers to carry out tasks efficiently in remote locations. All data collected through the app is synchronized with the main eGP system to ensure data accuracy and security.\n\n'
+      'The information displayed in this application is limited to authorized users only to ensure access control and data confidentiality.';
 
   @override
   String get logout => 'Logout';
