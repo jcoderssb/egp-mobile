@@ -7,7 +7,7 @@ class ApiEndpoints {
 
   // API Endpoints
   static const String login = "$baseUrl/api/create-token";
-  static const String dashboardPage = "$baseUrl/dashboards?isMobile=true&n=1";
+  static String get dashboardPage => "$baseUrl/dashboards?isMobile=true&$nID";
   static const String rekodTrail = "$baseUrl/api/rekod-trail";
   static String get mapMobile => "$baseUrl/api/mapmobile?2D&$nID";
 }

@@ -143,6 +143,18 @@ class LoginPage extends GetView<LoginController> {
                         ),
                       ),
                     ),
+                    // SizedBox(
+                    //   width: Get.width * 0.7,
+                    //   child: Text(
+                    //     "EGP.JCODERS.ONLINE",
+                    //     textAlign: TextAlign.center,
+                    //     style: TextStyle(
+                    //       fontSize: Get.width / 100 * 3,
+                    //       fontWeight: FontWeight.bold,
+                    //       color: const Color.fromARGB(255, 255, 217, 0),
+                    //     ),
+                    //   ),
+                    // ),
 
                     const SizedBox(
                       height: 60.0,
