@@ -293,7 +293,7 @@ class _ChoicePageState extends State<ChoicePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Hi  $loginName ! 👋',
+                    '${localization.hi} $loginName ! 👋',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.white,

@@ -7,7 +7,9 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'EGP Mobile';
+  String get hi => 'Hi';
+
+  String get appTitle => 'E-GP Mobile';
 
   @override
   String get choicepage_index_1 => 'Map';
@@ -58,15 +60,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get interval => 'Interval';
 
   @override
-  String get greeting => 'Welcome Back to EGP Mobile';
+  String get greeting => 'Welcome Back to E-GP Mobile';
 
   @override
   String get about_1 => 'About App';
 
   @override
   String get about_2 =>
-      'The latest version of the eGP mobile application, developed by JPSM, is designed to support digital management of forestry activities, especially through the Trail Mode feature which enables users to track and record fieldwork routes in forest areas in real time.\n\n'
-      'The app is built with user-friendly features and can be used without continuous internet connectivity, allowing JPSM officers to carry out tasks efficiently in remote locations. All data collected through the app is synchronized with the main eGP system to ensure data accuracy and security.\n\n'
+      'The latest version of the e-GP mobile application, developed by JPSM, is designed to support digital management of forestry activities, especially through the Trail Mode feature which enables users to track and record fieldwork routes in forest areas in real time.\n\n'
+      'The app is built with user-friendly features and can be used without continuous internet connectivity, allowing JPSM officers to carry out tasks efficiently in remote locations. All data collected through the app is synchronized with the main e-GP system to ensure data accuracy and security.\n\n'
       'The information displayed in this application is limited to authorized users only to ensure access control and data confidentiality.';
 
   @override

@@ -98,6 +98,9 @@ abstract class AppLocalizations {
     Locale('ms')
   ];
 
+  /// **'Hai / Hi'**
+  String get hi;
+
   /// **'Aplikasi EGP / EGP Mobile'**
   String get appTitle;
 

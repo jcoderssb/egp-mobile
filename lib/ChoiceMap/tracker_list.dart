@@ -113,12 +113,52 @@ class _TrackerListState extends State<TrackerList> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _buildDetailRow(localization.tracker_page_placeholder_2,
-                        trackerObj.startPoint),
-                    _buildDetailRow(localization.tracker_page_placeholder_3,
-                        trackerObj.endPoint),
-                    _buildDetailRow(
-                        localization.interval, '${trackerObj.interval}'),
+                    Card(
+                      elevation: 2,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            // First row
+                            _buildDetailSection(
+                              children: [
+                                _buildDetailItem(
+                                  label:
+                                      localization.tracker_page_placeholder_2,
+                                  value: trackerObj.startPoint,
+                                ),
+                                _buildDetailItem(
+                                  label:
+                                      localization.tracker_page_placeholder_3,
+                                  value: trackerObj.endPoint,
+                                ),
+                              ],
+                            ),
+
+                            Divider(height: 20),
+
+                            // Second row
+                            _buildDetailSection(
+                              children: [
+                                _buildDetailItem(
+                                  label: localization.tracker_page_label_1,
+                                  value: trackerObj.modTrailOptions,
+                                ),
+                                _buildDetailItem(
+                                  label: localization.tracker_page_label_2,
+                                  value: trackerObj.kaedahTrailOptions,
+                                ),
+                                if (trackerObj.intervalValue != 'Tiada')
+                                  _buildDetailItem(
+                                    label: localization.interval,
+                                    value: trackerObj.intervalValue,
+                                  ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 20),
                     Text(
                         "Location Points: ${trackerObj.locationPoints.length} points",
@@ -140,21 +180,35 @@ class _TrackerListState extends State<TrackerList> {
     );
   }
 
-// Helper widget for consistent detail rows
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 12),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(color: Colors.black, fontSize: 14),
-          children: [
-            TextSpan(
-              text: "$label: ",
-              style: TextStyle(fontWeight: FontWeight.bold),
+  // Helper widget for consistent detail rows
+  Widget _buildDetailSection({required List<Widget> children}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: children,
+    );
+  }
+
+  Widget _buildDetailItem({required String label, required String value}) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
             ),
-            TextSpan(text: value),
-          ],
-        ),
+          ),
+          SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[600],
+            ),
+          ),
+        ],
       ),
     );
   }

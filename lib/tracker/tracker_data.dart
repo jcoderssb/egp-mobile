@@ -10,6 +10,9 @@ class TrackerData {
   late bool isUploaded;
   late List<LocationPoints> locationPoints;
   late DateTime trackingEndTime;
+  late String modTrailOptions;
+  late String kaedahTrailOptions;
+  late String intervalValue;
 
   TrackerData({
     required this.name,
@@ -22,6 +25,9 @@ class TrackerData {
     required this.intervalTypeId,
     required this.locationPoints,
     required this.trackingEndTime,
+    required this.modTrailOptions,
+    required this.kaedahTrailOptions,
+    required this.intervalValue,
     this.isUploaded = false,
   });
 
@@ -36,6 +42,9 @@ class TrackerData {
     intervalTypeId = json['interval_type_id'];
     isUploaded = json["isUploaded"] ?? false;
     trackingEndTime = DateTime.parse(json['trackingEndTime']);
+    modTrailOptions = json['modTrailOptions'];
+    kaedahTrailOptions = json['kaedahTrailOptions'];
+    intervalValue = json['intervalValue'];
     if (json['location_points'] != null) {
       locationPoints = <LocationPoints>[];
       json['location_points'].forEach((v) {
@@ -57,6 +66,9 @@ class TrackerData {
     data['isUploaded'] = isUploaded;
     data['location_points'] = locationPoints.map((v) => v.toJson()).toList();
     data['trackingEndTime'] = trackingEndTime.toIso8601String();
+    data['modTrailOptions'] = modTrailOptions;
+    data['kaedahTrailOptions'] = kaedahTrailOptions;
+    data['intervalValue'] = intervalValue;
     return data;
   }
 }

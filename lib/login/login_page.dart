@@ -185,7 +185,29 @@ class LoginPage extends GetView<LoginController> {
                     loginButton,
 
                     const SizedBox(
-                      height: 20.0,
+                      height: 100.0,
+                    ),
+
+                    Container(
+                      alignment: Alignment.center,
+                      padding: EdgeInsets.only(bottom: 20),
+                      child: Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Text(
+                          "DATA TERHAD",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: Get.width / 100 * 3,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),

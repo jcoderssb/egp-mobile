@@ -7,7 +7,9 @@ class AppLocalizationsMs extends AppLocalizations {
   AppLocalizationsMs([String locale = 'ms']) : super(locale);
 
   @override
-  String get appTitle => 'Aplikasi EGP';
+  String get hi => 'Hai';
+
+  String get appTitle => 'Aplikasi E-GP';
 
   @override
   String get choicepage_index_1 => 'Peta';
@@ -58,15 +60,15 @@ class AppLocalizationsMs extends AppLocalizations {
   String get interval => 'Selang Masa';
 
   @override
-  String get greeting => 'Selamat Kembali ke Aplikasi EGP';
+  String get greeting => 'Selamat Kembali ke Aplikasi E-GP';
 
   @override
   String get about_1 => 'Tentang Aplikasi';
 
   @override
   String get about_2 =>
-      'Aplikasi mudah alih eGP versi terkini yang dibangunkan oleh JPSM bertujuan untuk menyokong pengurusan aktiviti perhutanan secara digital, khususnya melalui fungsi mod Trail yang membolehkan pengguna menjejak dan merekod laluan kerja lapangan di kawasan hutan secara masa nyata.\n\n'
-      'Aplikasi ini direka bentuk dengan ciri mesra pengguna dan boleh digunakan tanpa sambungan internet berterusan, membolehkan pegawai JPSM menjalankan tugasan di lokasi terpencil dengan lebih efisien. Semua data yang dikumpul melalui aplikasi akan diselaraskan dengan sistem utama eGP bagi menjamin ketepatan dan keselamatan maklumat.\n\n'
+      'Aplikasi mudah alih e-GP versi terkini yang dibangunkan oleh JPSM bertujuan untuk menyokong pengurusan aktiviti perhutanan secara digital, khususnya melalui fungsi mod Trail yang membolehkan pengguna menjejak dan merekod laluan kerja lapangan di kawasan hutan secara masa nyata.\n\n'
+      'Aplikasi ini direka bentuk dengan ciri mesra pengguna dan boleh digunakan tanpa sambungan internet berterusan, membolehkan pegawai JPSM menjalankan tugasan di lokasi terpencil dengan lebih efisien. Semua data yang dikumpul melalui aplikasi akan diselaraskan dengan sistem utama e-GP bagi menjamin ketepatan dan keselamatan maklumat.\n\n'
       'Maklumat yang dipaparkan dalam aplikasi ini adalah terhad kepada pengguna yang diberi kebenaran sahaja bagi memastikan kawalan akses dan kerahsiaan data.';
 
   @override

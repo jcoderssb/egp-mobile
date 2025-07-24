@@ -172,6 +172,7 @@ class TrackerController extends GetxController {
     }
 
     var interval = 0;
+    var intervalValue = '';
     var intervalTypeId = 0;
 
     if (kaedahTrailSelectedValue.value == "Kenderaan") {
@@ -179,6 +180,9 @@ class TrackerController extends GetxController {
       if (modTrailSelectedValue.value != "Manual") {
         interval = intervalValuesKenderaan[
             intervalOptionsKenderaan.indexOf(intervalSelectedValueS.value!)];
+        intervalValue = intervalSelectedValueS.value!;
+      } else {
+        intervalValue = "Tiada";
       }
     } else {
       intervalTypeId = 2;
@@ -186,12 +190,18 @@ class TrackerController extends GetxController {
         interval = intervalValuesBerjalan[intervalOptionsBerjalan
                 .indexOf(intervalSelectedValueM.value!)] *
             60;
+        intervalValue = intervalSelectedValueM.value!;
+      } else {
+        intervalValue = "Tiada";
       }
     }
 
     var modTrailId = modTrailOptions.indexOf(modTrailSelectedValue.value!) + 1;
     var kaedahTrailId =
         kaedahTrailOptions.indexOf(kaedahTrailSelectedValue.value!) + 1;
+    var modTrailValue = modTrailSelectedValue.value!;
+    var kaedahTrailValue = kaedahTrailSelectedValue.value!;
+    var intervalOptionValue = intervalValue;
     var negeriId = int.tryParse(nID) ?? 0;
 
     TrackerData trackerData = TrackerData(
@@ -204,6 +214,9 @@ class TrackerController extends GetxController {
       interval: interval,
       intervalTypeId: intervalTypeId,
       locationPoints: userLocations,
+      modTrailOptions: modTrailValue,
+      kaedahTrailOptions: kaedahTrailValue,
+      intervalValue: intervalOptionValue,
       trackingEndTime: DateTime.now(),
     );
 
