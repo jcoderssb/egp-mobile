@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:egp/general_layout.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:egp/flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 
 class TrackerList extends StatefulWidget {

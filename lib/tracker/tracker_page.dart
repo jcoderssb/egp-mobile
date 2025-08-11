@@ -7,7 +7,7 @@ import 'package:egp/tracker/tracker_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:location/location.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:egp/flutter_gen/gen_l10n/app_localizations.dart';
 
 class TrackerPage extends StatefulWidget {
   const TrackerPage({super.key});

@@ -4,7 +4,7 @@ import 'package:egp/locale/locale_controller.dart';
 import 'package:egp/tracker/tracker_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:egp/flutter_gen/gen_l10n/app_localizations.dart';
 import '../constants.dart';
 import 'map_page.dart';
 import 'dashboard_index_page.dart';
