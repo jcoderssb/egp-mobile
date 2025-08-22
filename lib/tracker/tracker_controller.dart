@@ -105,8 +105,7 @@ class TrackerController extends GetxController {
     } else {
       if (intervalSelectedValueM.value == null) return 300;
       return intervalValuesBerjalan[
-              intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)] *
-          60;
+          intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)];
     }
   }
 
@@ -187,9 +186,8 @@ class TrackerController extends GetxController {
     } else {
       intervalTypeId = 2;
       if (modTrailSelectedValue.value != "Manual") {
-        interval = intervalValuesBerjalan[intervalOptionsBerjalan
-                .indexOf(intervalSelectedValueM.value!)] *
-            60;
+        interval = intervalValuesBerjalan[
+            intervalOptionsBerjalan.indexOf(intervalSelectedValueM.value!)];
         intervalValue = intervalSelectedValueM.value!;
       } else {
         intervalValue = "Tiada";

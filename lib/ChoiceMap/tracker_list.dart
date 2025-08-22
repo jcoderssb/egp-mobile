@@ -161,12 +161,29 @@ class _TrackerListState extends State<TrackerList> {
                     ),
                     SizedBox(height: 20),
                     Text(
-                        "Location Points: ${trackerObj.locationPoints.length} points",
+                        "${localization.locationPoint} : ${trackerObj.locationPoints.length} ${localization.points}",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     ...trackerObj.locationPoints.map(
                       (point) => Padding(
                         padding: EdgeInsets.only(top: 8),
-                        child: Text("📍 Lat: ${point.lat}, Lng: ${point.lon}"),
+                        child: RichText(
+                          text: TextSpan(
+                            style: DefaultTextStyle.of(context).style,
+                            children: [
+                              TextSpan(text: "📍 "),
+                              TextSpan(
+                                text: "Lat: ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: "${point.lat}, "),
+                              TextSpan(
+                                text: "Long: ",
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                              TextSpan(text: "${point.lon}"),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(height: 20), // Extra space at bottom

@@ -155,4 +155,16 @@ class AppLocalizationsMs extends AppLocalizations {
 
   @override
   String get time => 'Masa';
+
+  @override
+  String get trackerActive => 'MOD JEJAK AKTIF';
+
+  @override
+  String get trackerInactive => 'MOD JEJAK NYAHAKTIF';
+
+  @override
+  String get locationPoint => 'Koordinat';
+
+  @override
+  String get points => 'titik';
 }

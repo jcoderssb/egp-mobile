@@ -154,4 +154,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get time => 'Time';
+
+  @override
+  String get trackerActive => 'TRACKING ACTIVE';
+
+  @override
+  String get trackerInactive => 'TRACKING INACTIVE';
+
+  @override
+  String get locationPoint => 'Location Point';
+
+  @override
+  String get points => 'points';
 }

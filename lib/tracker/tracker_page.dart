@@ -145,18 +145,12 @@ class _TrackerPageState extends State<TrackerPage>
             children: [
               Text(
                 '${localization.finish} ${localization.trail}',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
               Text(
                 localization.confirm_finish_track,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
               const SizedBox(height: 24),
               Row(
@@ -172,9 +166,7 @@ class _TrackerPageState extends State<TrackerPage>
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
-                        localization.cancel,
-                      ),
+                      child: Text(localization.cancel),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -285,8 +277,8 @@ class _TrackerPageState extends State<TrackerPage>
                                         children: [
                                           Text(
                                             controller.isTracking.value
-                                                ? "TRACKING ACTIVE"
-                                                : "TRACKING INACTIVE",
+                                                ? localization.trackerActive
+                                                : localization.trackerInactive,
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontWeight: FontWeight.bold,
@@ -312,7 +304,8 @@ class _TrackerPageState extends State<TrackerPage>
                                               strokeWidth: 2,
                                               valueColor:
                                                   AlwaysStoppedAnimation<Color>(
-                                                      themeColor),
+                                                    themeColor,
+                                                  ),
                                             ),
                                           ),
                                           const SizedBox(width: 8),
@@ -339,20 +332,20 @@ class _TrackerPageState extends State<TrackerPage>
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 HWMInputBox(
-                                    hint:
-                                        localization.tracker_page_placeholder_1,
-                                    fieldValid: controller.nameValid.value,
-                                    controller: controller.nameTextController),
+                                  hint: localization.tracker_page_placeholder_1,
+                                  fieldValid: controller.nameValid.value,
+                                  controller: controller.nameTextController,
+                                ),
                                 HWMInputBox(
-                                    hint:
-                                        localization.tracker_page_placeholder_2,
-                                    fieldValid: controller.startValid.value,
-                                    controller: controller.startTextController),
+                                  hint: localization.tracker_page_placeholder_2,
+                                  fieldValid: controller.startValid.value,
+                                  controller: controller.startTextController,
+                                ),
                                 HWMInputBox(
-                                    hint:
-                                        localization.tracker_page_placeholder_3,
-                                    fieldValid: controller.endValid.value,
-                                    controller: controller.endTextController),
+                                  hint: localization.tracker_page_placeholder_3,
+                                  fieldValid: controller.endValid.value,
+                                  controller: controller.endTextController,
+                                ),
                               ],
                             ),
                           ),
@@ -360,7 +353,9 @@ class _TrackerPageState extends State<TrackerPage>
                           //Dropdown Section
                           Padding(
                             padding: const EdgeInsets.symmetric(
-                                horizontal: 5, vertical: 10),
+                              horizontal: 5,
+                              vertical: 10,
+                            ),
                             child: Column(
                               children: [
                                 Row(
@@ -371,7 +366,8 @@ class _TrackerPageState extends State<TrackerPage>
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
+                                          horizontal: 4.0,
+                                        ),
                                         child: Obx(
                                           () => TextButton(
                                             onPressed: () {
@@ -379,13 +375,13 @@ class _TrackerPageState extends State<TrackerPage>
                                                   ?.unfocus();
                                               showModalBottomSheet(
                                                 context: context,
-                                                builder:
-                                                    (BuildContext context) {
+                                                builder: (BuildContext context) {
                                                   return Container(
                                                     height: 300,
                                                     padding:
                                                         const EdgeInsets.all(
-                                                            16),
+                                                          16,
+                                                        ),
                                                     child: Column(
                                                       children: [
                                                         Text(
@@ -398,58 +394,60 @@ class _TrackerPageState extends State<TrackerPage>
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                            height: 16),
+                                                          height: 16,
+                                                        ),
                                                         Expanded(
-                                                          child:
-                                                              ListView.builder(
+                                                          child: ListView.builder(
                                                             itemCount: controller
                                                                 .modTrailOptions
                                                                 .length,
                                                             itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    int index) {
-                                                              final option =
-                                                                  controller
-                                                                          .modTrailOptions[
-                                                                      index];
-                                                              final isSelected =
-                                                                  controller
+                                                                (
+                                                                  BuildContext
+                                                                  context,
+                                                                  int index,
+                                                                ) {
+                                                                  final option =
+                                                                      controller
+                                                                          .modTrailOptions[index];
+                                                                  final isSelected =
+                                                                      controller
                                                                           .modTrailSelectedValue
                                                                           .value ==
                                                                       option;
-                                                              return ListTile(
-                                                                title: Text(
-                                                                  option,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: isSelected
-                                                                        ? themeColor
-                                                                        : Colors
-                                                                            .black,
-                                                                    fontWeight: isSelected
-                                                                        ? FontWeight
-                                                                            .bold
-                                                                        : FontWeight
-                                                                            .normal,
-                                                                  ),
-                                                                ),
-                                                                trailing: isSelected
-                                                                    ? Icon(
-                                                                        Icons
-                                                                            .check,
+                                                                  return ListTile(
+                                                                    title: Text(
+                                                                      option,
+                                                                      style: TextStyle(
                                                                         color:
-                                                                            themeColor)
-                                                                    : null,
-                                                                onTap: () {
-                                                                  controller
-                                                                      .modTrailSelectedValue
-                                                                      .value = option;
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                            isSelected
+                                                                            ? themeColor
+                                                                            : Colors.black,
+                                                                        fontWeight:
+                                                                            isSelected
+                                                                            ? FontWeight.bold
+                                                                            : FontWeight.normal,
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        isSelected
+                                                                        ? Icon(
+                                                                            Icons.check,
+                                                                            color:
+                                                                                themeColor,
+                                                                          )
+                                                                        : null,
+                                                                    onTap: () {
+                                                                      controller
+                                                                              .modTrailSelectedValue
+                                                                              .value =
+                                                                          option;
+                                                                      Navigator.pop(
+                                                                        context,
+                                                                      );
+                                                                    },
+                                                                  );
                                                                 },
-                                                              );
-                                                            },
                                                           ),
                                                         ),
                                                       ],
@@ -459,7 +457,8 @@ class _TrackerPageState extends State<TrackerPage>
                                               );
                                             },
                                             style: TextButton.styleFrom(
-                                              backgroundColor: controller
+                                              backgroundColor:
+                                                  controller
                                                           .modTrailSelectedValue
                                                           .value !=
                                                       null
@@ -471,24 +470,28 @@ class _TrackerPageState extends State<TrackerPage>
                                               ),
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 12.0),
+                                                    vertical: 12.0,
+                                                  ),
                                             ),
                                             child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.track_changes,
-                                                    size: 40,
-                                                    color: controller
-                                                                    .modTrailSelectedValue
-                                                                    .value !=
-                                                                null &&
-                                                            controller
-                                                                .modTrailSelectedValue
-                                                                .value!
-                                                                .isNotEmpty
-                                                        ? themeColor
-                                                        : Colors.grey[500]),
+                                                Icon(
+                                                  Icons.track_changes,
+                                                  size: 40,
+                                                  color:
+                                                      controller
+                                                                  .modTrailSelectedValue
+                                                                  .value !=
+                                                              null &&
+                                                          controller
+                                                              .modTrailSelectedValue
+                                                              .value!
+                                                              .isNotEmpty
+                                                      ? themeColor
+                                                      : Colors.grey[500],
+                                                ),
                                                 const SizedBox(height: 4),
                                                 Text(
                                                   controller
@@ -497,8 +500,9 @@ class _TrackerPageState extends State<TrackerPage>
                                                       localization.choose,
                                                   style: TextStyle(
                                                     fontSize: 14,
-                                                    color: Theme.of(context)
-                                                        .hintColor,
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).hintColor,
                                                   ),
                                                 ),
                                               ],
@@ -519,7 +523,8 @@ class _TrackerPageState extends State<TrackerPage>
                                     Expanded(
                                       child: Padding(
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
+                                          horizontal: 4.0,
+                                        ),
                                         child: Obx(
                                           () => TextButton(
                                             onPressed: () {
@@ -527,13 +532,13 @@ class _TrackerPageState extends State<TrackerPage>
                                                   ?.unfocus();
                                               showModalBottomSheet(
                                                 context: context,
-                                                builder:
-                                                    (BuildContext context) {
+                                                builder: (BuildContext context) {
                                                   return Container(
                                                     height: 300,
                                                     padding:
                                                         const EdgeInsets.all(
-                                                            16),
+                                                          16,
+                                                        ),
                                                     child: Column(
                                                       children: [
                                                         Text(
@@ -546,74 +551,79 @@ class _TrackerPageState extends State<TrackerPage>
                                                           ),
                                                         ),
                                                         const SizedBox(
-                                                            height: 16),
+                                                          height: 16,
+                                                        ),
                                                         Expanded(
-                                                          child:
-                                                              ListView.builder(
+                                                          child: ListView.builder(
                                                             itemCount: controller
                                                                 .kaedahTrailOptions
                                                                 .length,
                                                             itemBuilder:
-                                                                (BuildContext
-                                                                        context,
-                                                                    int index) {
-                                                              final option =
-                                                                  controller
-                                                                          .kaedahTrailOptions[
-                                                                      index];
-                                                              final isSelected =
-                                                                  controller
+                                                                (
+                                                                  BuildContext
+                                                                  context,
+                                                                  int index,
+                                                                ) {
+                                                                  final option =
+                                                                      controller
+                                                                          .kaedahTrailOptions[index];
+                                                                  final isSelected =
+                                                                      controller
                                                                           .kaedahTrailSelectedValue
                                                                           .value ==
                                                                       option;
-                                                              // Determine icon based on option
-                                                              final icon = option
-                                                                      .toLowerCase()
-                                                                      .contains(
-                                                                          'kenderaan')
-                                                                  ? Icons
-                                                                      .directions_car
-                                                                  : Icons
-                                                                      .directions_walk;
+                                                                  // Determine icon based on option
+                                                                  final icon =
+                                                                      option
+                                                                          .toLowerCase()
+                                                                          .contains(
+                                                                            'kenderaan',
+                                                                          )
+                                                                      ? Icons
+                                                                            .directions_car
+                                                                      : Icons
+                                                                            .directions_walk;
 
-                                                              return ListTile(
-                                                                leading: Icon(
-                                                                    icon,
-                                                                    color: isSelected
-                                                                        ? themeColor
-                                                                        : Colors
-                                                                            .grey),
-                                                                title: Text(
-                                                                  option,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    color: isSelected
-                                                                        ? themeColor
-                                                                        : Colors
-                                                                            .black,
-                                                                    fontWeight: isSelected
-                                                                        ? FontWeight
-                                                                            .bold
-                                                                        : FontWeight
-                                                                            .normal,
-                                                                  ),
-                                                                ),
-                                                                trailing: isSelected
-                                                                    ? Icon(
-                                                                        Icons
-                                                                            .check,
+                                                                  return ListTile(
+                                                                    leading: Icon(
+                                                                      icon,
+                                                                      color:
+                                                                          isSelected
+                                                                          ? themeColor
+                                                                          : Colors.grey,
+                                                                    ),
+                                                                    title: Text(
+                                                                      option,
+                                                                      style: TextStyle(
                                                                         color:
-                                                                            themeColor)
-                                                                    : null,
-                                                                onTap: () {
-                                                                  controller
-                                                                      .kaedahTrailSelectedValue
-                                                                      .value = option;
-                                                                  Navigator.pop(
-                                                                      context);
+                                                                            isSelected
+                                                                            ? themeColor
+                                                                            : Colors.black,
+                                                                        fontWeight:
+                                                                            isSelected
+                                                                            ? FontWeight.bold
+                                                                            : FontWeight.normal,
+                                                                      ),
+                                                                    ),
+                                                                    trailing:
+                                                                        isSelected
+                                                                        ? Icon(
+                                                                            Icons.check,
+                                                                            color:
+                                                                                themeColor,
+                                                                          )
+                                                                        : null,
+                                                                    onTap: () {
+                                                                      controller
+                                                                              .kaedahTrailSelectedValue
+                                                                              .value =
+                                                                          option;
+                                                                      Navigator.pop(
+                                                                        context,
+                                                                      );
+                                                                    },
+                                                                  );
                                                                 },
-                                                              );
-                                                            },
                                                           ),
                                                         ),
                                                       ],
@@ -623,7 +633,8 @@ class _TrackerPageState extends State<TrackerPage>
                                               );
                                             },
                                             style: TextButton.styleFrom(
-                                              backgroundColor: controller
+                                              backgroundColor:
+                                                  controller
                                                           .kaedahTrailSelectedValue
                                                           .value !=
                                                       null
@@ -635,7 +646,8 @@ class _TrackerPageState extends State<TrackerPage>
                                               ),
                                               padding:
                                                   const EdgeInsets.symmetric(
-                                                      vertical: 12.0),
+                                                    vertical: 12.0,
+                                                  ),
                                             ),
                                             child: Column(
                                               mainAxisAlignment:
@@ -643,11 +655,14 @@ class _TrackerPageState extends State<TrackerPage>
                                               children: [
                                                 // Dynamic icon based on selected value
                                                 Icon(
-                                                  _getKaedahTrailIcon(controller
-                                                      .kaedahTrailSelectedValue
-                                                      .value),
+                                                  _getKaedahTrailIcon(
+                                                    controller
+                                                        .kaedahTrailSelectedValue
+                                                        .value,
+                                                  ),
                                                   size: 40,
-                                                  color: controller
+                                                  color:
+                                                      controller
                                                                   .kaedahTrailSelectedValue
                                                                   .value !=
                                                               null &&
@@ -666,8 +681,9 @@ class _TrackerPageState extends State<TrackerPage>
                                                       localization.choose,
                                                   style: TextStyle(
                                                     fontSize: 14,
-                                                    color: Theme.of(context)
-                                                        .hintColor,
+                                                    color: Theme.of(
+                                                      context,
+                                                    ).hintColor,
                                                   ),
                                                 ),
                                               ],
@@ -680,7 +696,8 @@ class _TrackerPageState extends State<TrackerPage>
                                     // Vertical divider
                                     Obx(() {
                                       if (controller
-                                              .modTrailSelectedValue.value !=
+                                              .modTrailSelectedValue
+                                              .value !=
                                           "Manual") {
                                         return Container(
                                           width: 1,
@@ -695,23 +712,25 @@ class _TrackerPageState extends State<TrackerPage>
                                     // Interval Dropdown
                                     Obx(() {
                                       if (controller
-                                              .modTrailSelectedValue.value !=
+                                              .modTrailSelectedValue
+                                              .value !=
                                           "Manual") {
                                         return Expanded(
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 4.0),
+                                              horizontal: 4.0,
+                                            ),
                                             child: TextButton(
                                               onPressed: () {
                                                 showModalBottomSheet(
                                                   context: context,
-                                                  builder:
-                                                      (BuildContext context) {
+                                                  builder: (BuildContext context) {
                                                     return Container(
                                                       height: 300,
                                                       padding:
                                                           const EdgeInsets.all(
-                                                              16),
+                                                            16,
+                                                          ),
                                                       child: Column(
                                                         children: [
                                                           Text(
@@ -725,54 +744,53 @@ class _TrackerPageState extends State<TrackerPage>
                                                             ),
                                                           ),
                                                           const SizedBox(
-                                                              height: 16),
+                                                            height: 16,
+                                                          ),
                                                           Expanded(
-                                                            child: ListView
-                                                                .builder(
+                                                            child: ListView.builder(
                                                               itemCount: controller
                                                                   .getInterval()
                                                                   .length,
-                                                              itemBuilder:
-                                                                  (context,
-                                                                      index) {
+                                                              itemBuilder: (context, index) {
                                                                 final interval =
                                                                     controller
-                                                                            .getInterval()[
-                                                                        index];
+                                                                        .getInterval()[index];
                                                                 final isSelected =
                                                                     controller
-                                                                            .getSelectedValue()
-                                                                            .value ==
-                                                                        interval;
+                                                                        .getSelectedValue()
+                                                                        .value ==
+                                                                    interval;
                                                                 return ListTile(
                                                                   title: Text(
                                                                     interval,
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: isSelected
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          isSelected
                                                                           ? themeColor
-                                                                          : Colors
-                                                                              .black,
-                                                                      fontWeight: isSelected
-                                                                          ? FontWeight
-                                                                              .bold
-                                                                          : FontWeight
-                                                                              .normal,
+                                                                          : Colors.black,
+                                                                      fontWeight:
+                                                                          isSelected
+                                                                          ? FontWeight.bold
+                                                                          : FontWeight.normal,
                                                                     ),
                                                                   ),
-                                                                  trailing: isSelected
+                                                                  trailing:
+                                                                      isSelected
                                                                       ? Icon(
                                                                           Icons
                                                                               .check,
                                                                           color:
-                                                                              themeColor)
+                                                                              themeColor,
+                                                                        )
                                                                       : null,
                                                                   onTap: () {
                                                                     controller
                                                                         .setSelectedValue(
-                                                                            interval);
+                                                                          interval,
+                                                                        );
                                                                     Navigator.pop(
-                                                                        context);
+                                                                      context,
+                                                                    );
                                                                   },
                                                                 );
                                                               },
@@ -785,7 +803,8 @@ class _TrackerPageState extends State<TrackerPage>
                                                 );
                                               },
                                               style: TextButton.styleFrom(
-                                                backgroundColor: controller
+                                                backgroundColor:
+                                                    controller
                                                             .getSelectedValue()
                                                             .value !=
                                                         null
@@ -794,28 +813,33 @@ class _TrackerPageState extends State<TrackerPage>
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                          12.0),
+                                                        12.0,
+                                                      ),
                                                 ),
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                        vertical: 12.0),
+                                                      vertical: 12.0,
+                                                    ),
                                               ),
                                               child: Column(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 children: [
-                                                  Icon(Icons.access_time_filled,
-                                                      size: 40,
-                                                      color: controller
-                                                                      .getSelectedValue()
-                                                                      .value !=
-                                                                  null &&
-                                                              controller
-                                                                  .getSelectedValue()
-                                                                  .value!
-                                                                  .isNotEmpty
-                                                          ? themeColor
-                                                          : Colors.grey[500]),
+                                                  Icon(
+                                                    Icons.access_time_filled,
+                                                    size: 40,
+                                                    color:
+                                                        controller
+                                                                    .getSelectedValue()
+                                                                    .value !=
+                                                                null &&
+                                                            controller
+                                                                .getSelectedValue()
+                                                                .value!
+                                                                .isNotEmpty
+                                                        ? themeColor
+                                                        : Colors.grey[500],
+                                                  ),
                                                   const SizedBox(height: 4),
                                                   Text(
                                                     controller
@@ -824,8 +848,9 @@ class _TrackerPageState extends State<TrackerPage>
                                                         localization.choose,
                                                     style: TextStyle(
                                                       fontSize: 14,
-                                                      color: Theme.of(context)
-                                                          .hintColor,
+                                                      color: Theme.of(
+                                                        context,
+                                                      ).hintColor,
                                                     ),
                                                   ),
                                                 ],
@@ -843,9 +868,7 @@ class _TrackerPageState extends State<TrackerPage>
                             ),
                           ),
 
-                          const SizedBox(
-                            height: 50,
-                          ),
+                          const SizedBox(height: 50),
                         ],
                       ),
                     ),
@@ -867,35 +890,38 @@ class _TrackerPageState extends State<TrackerPage>
                   offset: const Offset(0, -4),
                 ),
               ],
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
             ),
             child: Column(
               children: [
                 // Stats row (points and coordinates)
-                Obx(() => Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        _buildStatItem(
-                          icon: Icons.location_pin,
-                          value: '${controller.userLocations.length}',
-                          label: 'Points',
-                          color: controller.userLocations.isEmpty
-                              ? Colors.red
-                              : Colors.green,
-                        ),
-                        _buildStatItem(
-                          icon: Icons.my_location,
-                          value: '${controller.userLat}',
-                          label: 'Latitude',
-                        ),
-                        _buildStatItem(
-                          icon: Icons.my_location,
-                          value: '${controller.userLon}',
-                          label: 'Longitude',
-                        ),
-                      ],
-                    )),
+                Obx(
+                  () => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      _buildStatItem(
+                        icon: Icons.location_pin,
+                        value: '${controller.userLocations.length}',
+                        label: 'Points',
+                        color: controller.userLocations.isEmpty
+                            ? Colors.red
+                            : Colors.green,
+                      ),
+                      _buildStatItem(
+                        icon: Icons.my_location,
+                        value: '${controller.userLat}',
+                        label: 'Latitude',
+                      ),
+                      _buildStatItem(
+                        icon: Icons.my_location,
+                        value: '${controller.userLon}',
+                        label: 'Longitude',
+                      ),
+                    ],
+                  ),
+                ),
 
                 const SizedBox(height: 16),
 
@@ -904,9 +930,11 @@ class _TrackerPageState extends State<TrackerPage>
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     // Invisible spacer to maintain balance
-                    Obx(() => controller.modTrailSelectedValue.value == "Manual"
-                        ? const SizedBox(width: 60, height: 60)
-                        : const SizedBox.shrink()),
+                    Obx(
+                      () => controller.modTrailSelectedValue.value == "Manual"
+                          ? const SizedBox(width: 60, height: 60)
+                          : const SizedBox.shrink(),
+                    ),
 
                     // Tracking button
                     Obx(
@@ -922,11 +950,17 @@ class _TrackerPageState extends State<TrackerPage>
                             Get.snackbar(
                               localization.attention,
                               localization.fill_all,
-                              backgroundColor:
-                                  const Color.fromARGB(200, 244, 67, 54),
+                              backgroundColor: const Color.fromARGB(
+                                200,
+                                244,
+                                67,
+                                54,
+                              ),
                               colorText: Colors.white,
-                              icon: const Icon(Icons.error_outline,
-                                  color: Colors.white),
+                              icon: const Icon(
+                                Icons.error_outline,
+                                color: Colors.white,
+                              ),
                               borderRadius: 10,
                               margin: const EdgeInsets.all(10),
                               duration: const Duration(seconds: 2),
@@ -947,20 +981,22 @@ class _TrackerPageState extends State<TrackerPage>
                                 spreadRadius: 2,
                                 blurRadius: 5,
                                 offset: const Offset(0, 3),
-                              )
+                              ),
                             ],
                           ),
                           child: Center(
-                            child: Obx(() => Text(
-                                  controller.isTracking.value
-                                      ? localization.finish.toUpperCase()
-                                      : localization.start.toUpperCase(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )),
+                            child: Obx(
+                              () => Text(
+                                controller.isTracking.value
+                                    ? localization.finish.toUpperCase()
+                                    : localization.start.toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                       ),
@@ -980,10 +1016,15 @@ class _TrackerPageState extends State<TrackerPage>
                                       localization.attention,
                                       localization.track_first,
                                       backgroundColor: const Color.fromARGB(
-                                          200, 255, 168, 38),
+                                        200,
+                                        255,
+                                        168,
+                                        38,
+                                      ),
                                       icon: const Icon(
-                                          Icons.warning_amber_rounded,
-                                          color: Colors.white),
+                                        Icons.warning_amber_rounded,
+                                        color: Colors.white,
+                                      ),
                                       borderRadius: 10,
                                       margin: const EdgeInsets.all(10),
                                       colorText: Colors.white,
@@ -1003,7 +1044,7 @@ class _TrackerPageState extends State<TrackerPage>
                                     spreadRadius: 2,
                                     blurRadius: 5,
                                     offset: const Offset(0, 3),
-                                  )
+                                  ),
                                 ],
                               ),
                               child: const Center(
@@ -1022,9 +1063,7 @@ class _TrackerPageState extends State<TrackerPage>
                   ],
                 ),
 
-                const SizedBox(
-                  height: 20,
-                ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
@@ -1053,13 +1092,7 @@ Widget _buildStatItem({
           color: color,
         ),
       ),
-      Text(
-        label,
-        style: TextStyle(
-          fontSize: 12,
-          color: Colors.grey[600],
-        ),
-      ),
+      Text(label, style: TextStyle(fontSize: 12, color: Colors.grey[600])),
     ],
   );
 }

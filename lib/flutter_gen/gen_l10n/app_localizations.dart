@@ -95,7 +95,7 @@ abstract class AppLocalizations {
   /// A list of this localizations delegate's supported locales.
   static const List<Locale> supportedLocales = <Locale>[
     Locale('en'),
-    Locale('ms')
+    Locale('ms'),
   ];
 
   /// **'Hai / Hi'**
@@ -244,6 +244,18 @@ abstract class AppLocalizations {
 
   /// **'Masa / Time'**
   String get time;
+
+  /// **'MOD JEJAK AKTIF / TRACKING ACTIVE'**
+  String get trackerActive;
+
+  /// **'MOD JEJAK NYAHAKTIF / TRACKING INACTIVE'**
+  String get trackerInactive;
+
+  /// **'Koordinat / Location Points'**
+  String get locationPoint;
+
+  /// **'titk / points'**
+  String get points;
 }
 
 class _AppLocalizationsDelegate
@@ -273,8 +285,9 @@ AppLocalizations lookupAppLocalizations(Locale locale) {
   }
 
   throw FlutterError(
-      'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
-      'an issue with the localizations generation tool. Please file an issue '
-      'on GitHub with a reproducible sample app and the gen-l10n configuration '
-      'that was used.');
+    'AppLocalizations.delegate failed to load unsupported locale "$locale". This is likely '
+    'an issue with the localizations generation tool. Please file an issue '
+    'on GitHub with a reproducible sample app and the gen-l10n configuration '
+    'that was used.',
+  );
 }
