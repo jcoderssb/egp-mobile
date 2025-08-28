@@ -24,7 +24,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get choicepage_index_4 => 'Muat Naik Data';
 
   @override
-  String get choicepage_index_5 => 'Tentang';
+  String get choicepage_index_5 => 'Info';
 
   @override
   String get tracker_page_placeholder_1 => 'Nama Trail';
@@ -63,7 +63,7 @@ class AppLocalizationsMs extends AppLocalizations {
   String get greeting => 'Selamat Kembali ke Aplikasi E-GP';
 
   @override
-  String get about_1 => 'Tentang Aplikasi';
+  String get about_1 => 'Info';
 
   @override
   String get about_2 =>
