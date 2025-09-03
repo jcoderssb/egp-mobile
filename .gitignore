@@ -24,12 +24,7 @@ migrate_working_dir/
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
-.dart_tool/extension_discovery
-.dart_tool/flutter_build
-.dart_tool/pub
-.dart_tool/package_config.json
-.dart_tool/package_config_subset
-.dart_tool/version
+.dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
 .packages
