@@ -198,9 +198,10 @@ class LoginPage extends GetView<LoginController> {
                       child: const Text(
                         "DATA TERHAD",
                         style: TextStyle(
+                          fontSize: 10,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 2,
+                          letterSpacing: 1,
                         ),
                       ),
                     ),
